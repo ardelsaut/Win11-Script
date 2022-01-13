@@ -203,6 +203,13 @@ Set-ExecutionPolicy Unrestricted
     Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V' -All -NoRestart
     Enable-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform' -All -NoRestart
 
+$namespaceName = "root\cimv2\mdm\dmmap"
+$className = "MDM_EnterpriseModernAppManagement_AppManagement01"
+$wmiObj = Get-WmiObject -Namespace $namespaceName -Class $className
+$result = $wmiObj.UpdateScanMethod()
+$result
+Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
+
 # On installe wal
     wsl.exe --install
 # On installe Debian sur WSL
@@ -503,12 +510,412 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
 # enable context menu
 REG ADD "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /VE /T REG_SZ /D "" /F
 
+# Take Ownershp context menu
+if(!(Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership")){
+       write-Host "Adding 'Take Ownership' to context menu!"
+       if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership") -ne $true){
+       New-Item "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership" -force -ea SilentlyContinue
+       }
+       if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership\command") -ne $true){
+       New-Item "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership\command" -force -ea SilentlyContinue
+       }
+       if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership") -ne $true){
+       New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership" -force -ea SilentlyContinue
+       }
+       if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership\command") -ne $true){
+       New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership\command" -force -ea SilentlyContinue
+       }
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership' -Name 'HasLUAShield' -Value '' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership' -Name 'Position' -Value 'middle' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership\command' -Name '(default)' -Value 'powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList ''/c takeown /f \"%1\" && icacls \"%1\" /grant *S-1-3-4:F /c /l'' -Verb runAs' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership\command' -Name 'IsolatedCommand' -Value 'powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList ''/c takeown /f \"%1\" && icacls \"%1\" /grant *S-1-3-4:F /c /l'' -Verb runAs' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership' -Name 'AppliesTo' -Value 'NOT (System.ItemPathDisplay:="C:\Users" OR System.ItemPathDisplay:="C:\ProgramData" OR System.ItemPathDisplay:="C:\Windows" OR System.ItemPathDisplay:="C:\Windows\System32" OR System.ItemPathDisplay:="C:\Program Files" OR System.ItemPathDisplay:="C:\Program Files (x86)")' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership' -Name 'HasLUAShield' -Value '' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership' -Name 'Position' -Value 'middle' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership\command' -Name '(default)' -Value 'powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList ''/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant *S-1-3-4:F /c /l /q'' -Verb runAs' -PropertyType String -Force -ea SilentlyContinue;
+       New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\TakeOwnership\command' -Name 'IsolatedCommand' -Value 'powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList ''/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant *S-1-3-4:F /c /l /q'' -Verb runAs' -PropertyType String -Force -ea SilentlyContinue;
+       write-Host "'Take Ownership' is added into context menu!"
+    } else {
+       Clear-Host
+       Write-Host "You already have `"Take Onwership`" added into your context menu!" -ForegroundColor Yellow -BackgroundColor Black
+}
 
+# Disable Telemetry
+    Write-Host "Disabling Telemetry..."
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 0
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Application Experience\ProgramDataUpdater" | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Autochk\Proxy" | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" | Out-Null
+    Write-Host "Disabling Application suggestions..."
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "ContentDeliveryAllowed" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OemPreInstalledAppsEnabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEnabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-338387Enabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-338388Enabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-338389Enabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-353698Enabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SystemPaneSuggestionsEnabled" -Type DWord -Value 0
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Type DWord -Value 1
+    Write-Host "Disabling Activity History..."
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
+     Write-Host "Disabling Location Tracking..."
+    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location")) {
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Type String -Value "Deny"
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
+    Write-Host "Disabling automatic Maps updates..."
+    Set-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0
+    Write-Host "Disabling Feedback..."
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Name "NumberOfSIUFInPeriod" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
+    Write-Host "Disabling Tailored Experiences..."
+    If (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent")) {
+        New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableTailoredExperiencesWithDiagnosticData" -Type DWord -Value 1
+    Write-Host "Disabling Advertising ID..."
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -Type DWord -Value 1
+    Write-Host "Disabling Error reporting..."
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting" -Name "Disabled" -Type DWord -Value 1
+    Disable-ScheduledTask -TaskName "Microsoft\Windows\Windows Error Reporting\QueueReporting" | Out-Null
+    Write-Host "Stopping and disabling Diagnostics Tracking Service..."
+    Stop-Service "DiagTrack" -WarningAction SilentlyContinue
+    Set-Service "DiagTrack" -StartupType Disabled
+    Write-Host "Stopping and disabling WAP Push Service..."
+    Stop-Service "dmwappushservice" -WarningAction SilentlyContinue
+    Set-Service "dmwappushservice" -StartupType Disabled
+    Write-Host "Enabling F8 boot menu options..."
+    bcdedit /set `{current`} bootmenupolicy Legacy | Out-Null
+    Write-Host "Disabling Remote Assistance..."
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Type DWord -Value 0
+    Write-Host "Disabling Storage Sense..."
+    Remove-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" -Recurse -ErrorAction SilentlyContinue
+    Write-Host "Stopping and disabling Superfetch service..."
+    Stop-Service "SysMain" -WarningAction SilentlyContinue
+    Set-Service "SysMain" -StartupType Disabled
+    Write-Host "Disabling Hibernation..."
+    Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Power" -Name "HibernteEnabled" -Type Dword -Value 0
+    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings")) {
+        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowHibernateOption" -Type Dword -Value 0
+    Write-Host "Showing task manager details..."
+    $taskmgr = Start-Process -WindowStyle Hidden -FilePath taskmgr.exe -PassThru
+    Do {
+        Start-Sleep -Milliseconds 100
+        $preferences = Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\TaskManager" -Name "Preferences" -ErrorAction SilentlyContinue
+    } Until ($preferences)
+    Stop-Process $taskmgr
+    $preferences.Preferences[28] = 0
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\TaskManager" -Name "Preferences" -Type Binary -Value $preferences.Preferences
+    Write-Host "Showing file operations details..."
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" -Name "EnthusiastMode" -Type DWord -Value 1
+
+Write-Host "Hiding People icon..."
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Name "PeopleBand" -Type DWord -Value 0
+    # Update 10 : Commented out this part of the code, because some people might not like it
+    #Write-Host "Showing all tray icons..."
+    #Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "EnableAutoTray" -Type DWord -Value 0
+    Write-Host "Enabling NumLock after startup..."
+    If (!(Test-Path "HKU:")) {
+        New-PSDrive -Name HKU -PSProvider Registry -Root HKEY_USERS | Out-Null
+    }
+    Set-ItemProperty -Path "HKU:\.DEFAULT\Control Panel\Keyboard" -Name "InitialKeyboardIndicators" -Type DWord -Value 2147483650
+    Add-Type -AssemblyName System.Windows.Forms
+    If (!([System.Windows.Forms.Control]::IsKeyLocked('NumLock'))) {
+        $wsh = New-Object -ComObject WScript.Shell
+        $wsh.SendKeys('{NUMLOCK}')
+    }
+    Write-Host "Changing default Explorer view to This PC..."
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 1
+    Write-Host "Hiding 3D Objects icon from This PC..."
+    Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Recurse -ErrorAction SilentlyContinue
+    #Network Tweaks
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "IRPStackSize" -Type DWord -Value 20
+	#SVCHost Tweak
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "SvcHostSplitThresholdInKB" -Type DWord -Value 4194304
+    Write-Host "Disable News and Interests"
+    if (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds")){
+    New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 0
+    #Remove news and interest from taskbar
+    Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
+    #Remove meet now button from taskbar
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
+        New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "HideSCAMeetNow" -Type DWord -Value 1
+
+    Write-Host "Removing AutoLogger file and restricting directory..."
+    $autoLoggerDir = "$env:PROGRAMDATA\Microsoft\Diagnosis\ETLLogs\AutoLogger"
+    If (Test-Path "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl") {
+        Remove-Item "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl"
+    }
+    icacls $autoLoggerDir /deny SYSTEM:`(OI`)`(CI`)F | Out-Null
+    #Disable Advertising ID
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo")) {
+	New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Type DWord -Value 0
+    write-Host "Advertising ID has been disabled"
+
+    #Disable SmartScreen
+    if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer")){
+        New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "SmartScreenEnabled" -Type String -Value "Off"
+    if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost")){
+        New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Name "EnableWebContentEvaluation" -Value 0
+    write-Host "SmartScreen has been disabled"
+    #Disable Hand Writing Reports
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports")){
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" -Name "PreventHandwritingErrorReports" -Type DWord -Value 1
+
+    #Disable Location Tracking...
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors")){
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Type DWord -Value 1
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocationScripting" -Type DWord -Value 1
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableSensors" -Type DWord -Value 1
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableWindowsLocationProvider" -Type DWord -Value 1
+
+    #Disable Auto Map Downloading/Updating
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Maps")){
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Maps" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Maps" -Name "AutoDownloadAndUpdateMapData" -Type DWord -Value 0
+     #Disable Windows Feeds
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds")){
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 0
+
+    #Disable Game DVR
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR")){
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+
+    #Disable Keyboard BS
+    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name "Flags" -Value "506"
+    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\Keyboard Response" -Name "Flags" -Value "122"
+    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\ToggleKeys" -Name "Flags" -Value "58"
+
+    Write-Host "Disabling some services and scheduled tasks"
+
+    $Services = @(
+        #"*xbox*" # Xbox Services
+        #"*Xbl*" # Xbox Services
+        "LanmanWorkstation"
+        "workfolderssvc"
+        #"WSearch" # Windows Search
+        #"PushToInstall" # Needed for Microsoft Store
+        #"icssvc" # Mobile Hotspot
+        "MixedRealityOpenXRSvc" # Mixed Reality
+        "WMPNetworkSvc" # Windows Media Player Sharing
+        #"LicenseManager" # License Manager for Microsoft Store
+        "wisvc" # Insider Program
+        "WerSvc" # Error Reporting
+        #"WalletService" # Wallet Service
+        #"lmhosts" # TCP/IP NetBIOS Helper
+        "SysMain" # SuperFetch - Safe to disable if you have a SSD
+        "svsvc" # Spot Verifier
+        #"sppsvc" # Software Protection
+        "SCPolicySvc" # Smart Card Removal Policy
+        "ScDeviceEnum" # Smart Card Device Enumeration Service
+        "SCardSvr" # Smart Card
+        "LanmanServer" # Server
+        #"SensorService" # Sensor Service
+        "RetailDemo" # Retail Demo Service
+        "RemoteRegistry" # Remote Registry
+        "UmRdpService" # Remote Desktop Services UserMode Port Redirector
+        "TermService" # Remote Desktop Services
+        "SessionEnv" # Remote Desktop Configuration
+        "RasMan" # Remote Access Connection Manager
+        "RasAuto" # Remote Access Auto Connection Manager
+        #"TroubleshootingSvc" # Recommended Troubleshooting Service
+        #"RmSvc" # Radio Management Service (Might be needed for laptops)
+        #"QWAVE" # Quality Windows Audio Video Experience
+        #"wercplsupport" # Problem Reports Control Panel Support
+        "Spooler" # Print Spooler
+        "PrintNotify" # Printer Extensions and Notifications
+        "PhoneSvc" # Phone Service
+        #"SEMgrSvc" # Payments and NFC/SE Manager
+        "WpcMonSvc" # Parental Controls
+        #"CscService" # Offline Files
+        #"InstallService" # Microsoft Store Install Service
+        #"SmsRouter" # Microsoft Windows SMS Router Service
+        #"smphost" # Microsoft Storage Spaces SMP
+        #"NgcCtnrSvc" # Microsoft Passport Container
+        #"MsKeyboardFilter" # Microsoft Keyboard Filter ... thanks (.AtomRadar treasury ♛#8267) for report. 
+        #"cloudidsvc" # Microsoft Cloud Identity Service
+        #"wlidsvc" # Microsoft Account Sign-in Assistant
+        "*diagnosticshub*" # Microsoft (R) Diagnostics Hub Standard Collector Service
+        #"iphlpsvc" # IP Helper - Might break some VPN Clients
+        "lfsvc" # Geolocation Service
+        "fhsvc" # File History Service
+        "Fax" # Fax
+        #"embeddedmode" # Embedded Mode
+        "MapsBroker" # Downloaded Maps Manager
+        "TrkWks" # Distributed Link Tracking Client
+        "WdiSystemHost" # Diagnostic System Host
+        "WdiServiceHost" # Diagnostic Service Host
+        "DPS" # Diagnostic Policy Service
+        "diagsvc" # Diagnostic Execution Service
+        #"DusmSvc" # Data Usage
+        #"VaultSvc" # Credential Manager
+        #"AppReadiness" # App Readiness
+    )
+
+    #Disable Services listed above
+    foreach ($Service in $Services) {
+    Get-Service -Name $Service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
+        if($Service.Status -eq "Running"){
+            Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue | Out-Null
+            Write-Host "Trying to stop " -NoNewline
+            Write-Host "`""$Service.DisplayName"`"" -ForegroundColor Cyan
+        }
+    }
+
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -Value '0' -PropertyType String -Force -ea SilentlyContinue;
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillAppTimeout' -Value '5000' -PropertyType String -Force -ea SilentlyContinue;
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'HungAppTimeout' -Value '4000' -PropertyType String -Force -ea SilentlyContinue;
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'AutoEndTasks' -Value '1' -PropertyType String -Force -ea SilentlyContinue;
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'LowLevelHooksTimeout' -Value 4096 -PropertyType DWord -Force -ea SilentlyContinue;
+    New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillServiceTimeout' -Value 8192 -PropertyType DWord -Force -ea SilentlyContinue;
+
+    Restart-Process -Process "explorer" -Restart
+    Write-Host "Tweaks are done!"
+
+# Cortana
+    Write-Host "Disabling Bing Search in Start Menu..."
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "BingSearchEnabled" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type DWord -Value 0
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type DWord -Value 1
+    Write-Host "Stopping and disabling Windows Search indexing service..."
+    Stop-Service "WSearch" -WarningAction SilentlyContinue
+    Set-Service "WSearch" -StartupType Disabled
+    Write-Host "Hiding Taskbar Search icon / box..."
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 0
+    Write-Host "Search tweaks completed"
+
+    Write-Host "Disabling Cortana..."
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type DWord -Value 0
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Type DWord -Value 1
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 1
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore")) {
+        New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
+    Stop-Process -Name "SearchApp" -Force -PassThru -ErrorAction SilentlyContinue
+    Stop-Process -Name explorer -Force -PassThru
+    Write-Host "Disabled Cortana"
+
+       $BloatwareList = @(
+        "Microsoft.BioEnrollment"
+        "Microsoft.LockApp"
+        "Microsoft.MicrosoftEdgeDevToolsClient"
+        "Microsoft.Windows.AssignedAccessLockApp"
+        "Microsoft.Windows.CallingShellApp"
+        "Microsoft.Windows.CapturePicker"
+        "Microsoft.Windows.NarratorQuickStart"
+        "Microsoft.Windows.ParentalControls"
+        "Microsoft.Windows.PeopleExperienceHost"
+        "Microsoft.Windows.SecureAssessmentBrowser"
+        "Microsoft.Windows.XGpuEjectDialog"
+        "MicrosoftWindows.UndockedDevKit"
+        "Microsoft.BingNews"
+        "Microsoft.BingWeather"
+        "Microsoft.GetHelp"
+        "Microsoft.Getstarted"
+        "Microsoft.MicrosoftOfficeHub"
+        "Microsoft.MicrosoftSolitaireCollection"
+        "Microsoft.MicrosoftStickyNotes"
+        "Microsoft.People"
+        "Microsoft.PowerAutomateDesktop"
+        "Microsoft.SecHealthUI"
+        "Microsoft.Windows.Photos"
+        "Microsoft.WindowsAlarms"
+        "Microsoft.WindowsCamera"
+        "microsoft.windowscommunicationsapps"
+        "Microsoft.WindowsFeedbackHub"
+        "Microsoft.WindowsMaps"
+        "Microsoft.WindowsSoundRecorder"
+        "Microsoft.ZuneMusic"
+        "Microsoft.ZuneVideo"
+        "MicrosoftTeams"
+        "Microsoft.549981C3F5F10"
+        "1527c705-839a-4832-9118-54d4Bd6a0c89"
+        "c5e2524a-ea46-4f67-841f-6a9465d9d515"
+        "E2A4F912-2574-4A75-9BB0-0D023378592B"
+        "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE"
+        "Microsoft.XboxGameOverlay"
+        "Microsoft.XboxGamingOverlay"
+        "Microsoft.XboxSpeechToTextOverlay"
+    )
+    foreach($Bloat in $BloatwareList){
+        Write-Host "Trying to remove `"" -NoNewline
+        Write-Host $Bloat -ForegroundColor Red -NoNewline
+        Write-Host "`" Package! Be patient..."
+        Get-AppxPackage -Name $Bloat | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-Null
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
+    }
 ########################################################################################################
 
 
 # On retablit la politique d'execution de Script dans Powershell
-Set-ExecutionPolicy Default
+Set-ExecutionPolicy Default -Force
 
 # On propose de redemarre la machine
     Write-Host "reboot the Computer"
