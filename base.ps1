@@ -1,5 +1,5 @@
 # Windows 10 - Configuration Script
-# iex ((New-Object System.Net.WebClient).DownloadString('https://gitlab.com/ardelsaut/base/-/raw/main/base.ps1'))
+# iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ardelsaut/Win11-Script/main/base.ps1'))
 
 
 ######################################
