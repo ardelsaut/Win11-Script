@@ -55,6 +55,8 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 #############################
 
 # On cree le dossier de Travail du script
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     Write-Host "On cree le dossier de Travail du script"
     New-Item -Path "c:\" -Name "nono-temp" -ItemType "directory"
     Write-Host "Le Dossier de Travail du script est cree" -ForegroundColor Green
@@ -171,9 +173,11 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # Removing AutoLogger file and restricting directory
     $autoLoggerDir = "$env:PROGRAMDATA\Microsoft\Diagnosis\ETLLogs\AutoLogger"
-    If (Test-Path "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl") {
+    If (Test-Path "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl")
+    {
         Remove-Item "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl"
     }
+
     icacls $autoLoggerDir /deny SYSTEM:`(OI`)`(CI`)F | Out-Null
 
 # Stopping and disabling Diagnostics Tracking Service
@@ -1263,7 +1267,7 @@ public static string GetString(uint strId)
 	return sb.ToString();
 }
 "@
-	}
+	
 	if (-not ("WinAPI.GetStr" -as [type]))
 	{
 		Add-Type @Signature -Using System.Text
