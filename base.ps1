@@ -233,8 +233,6 @@ Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseMode
     Start-Sleep -s 2
     Wait-Process -Name AppInstaller
     Start-Sleep -s 5
-# Activer les Mises à Jour automatiques du Windows Store
-    reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
     $env:Path += ";$env:LocalAppData\Microsoft\WindowsApps";
     Start-Sleep -s 5
 
@@ -304,6 +302,9 @@ Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseMode
     winget install --id=Google.Drive  -e --accept-package-agreements --accept-source-agreements
 # VSCodium
     winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreement
+
+# Activer les Mises à Jour automatiques du Windows Store
+    reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
 
 
 ########################################################################################################
