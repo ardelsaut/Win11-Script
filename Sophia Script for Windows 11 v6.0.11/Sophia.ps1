@@ -1,5 +1,6 @@
 ﻿#Requires -RunAsAdministrator
 #Requires -Version 5.1
+# Invoke-RestMethod -Uri "https://api.github.com/repos/ardelsaut/win11-script/zipball/main" -OutFile "$pwd\nono.zip"; Expand-Archive -Path "$pwd\nono.zip" -DestinationPath "$pwd\Github" -Force; Set-ExecutionPolicy Unrestricted; cd $pwd\Github\ardelsaut-Win11-Script-b438f35\'Sophia Script for Windows 11 v6.0.11'\; .\Sophia.ps1
 
 [CmdletBinding()]
 param
@@ -164,7 +165,7 @@ PowerShellModulesLogging -Disable
 PowerShellScriptsLogging -Disable
 AppsSmartScreen -Disable
 SaveZoneInformation -Disable
-WindowsScriptHost -Disable
+WindowsScriptHost -Enable
 DismissMSAccount
 DismissSmartScreenFilter
 
@@ -262,6 +263,8 @@ New-Item -Path "c:\Users\$($env:USERNAME)" -Name "Applications" -ItemType "direc
 # VSCodium
     winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreements
     Stop-Process -Name 'VSCodium' -Force
+# Git
+    winget install --id=Git.Git  -e --accept-package-agreements --accept-source-agreements
 
 ##############
 # CHOCOLATEY #
@@ -329,7 +332,83 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     			New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
 
 git clone 
-
+Function Set-WallPaper {
+ 
+<#
+ 
+    .SYNOPSIS
+    Applies a specified wallpaper to the current user's desktop
+    
+    .PARAMETER Image
+    Provide the exact path to the image
+ 
+    .PARAMETER Style
+    Provide wallpaper style (Example: Fill, Fit, Stretch, Tile, Center, or Span)
+  
+    .EXAMPLE
+    Set-WallPaper -Image "C:\Wallpaper\Default.jpg"
+    Set-WallPaper -Image "C:\Wallpaper\Background.jpg" -Style Fit
+  
+#>
+ 
+param (
+    [parameter(Mandatory=$True)]
+    # Provide path to image
+    [string]$Image,
+    # Provide wallpaper style that you would like applied
+    [parameter(Mandatory=$False)]
+    [ValidateSet('Fill', 'Fit', 'Stretch', 'Tile', 'Center', 'Span')]
+    [string]$Style
+)
+ 
+$WallpaperStyle = Switch ($Style) {
+  
+    "Fill" {"10"}
+    "Fit" {"6"}
+    "Stretch" {"2"}
+    "Tile" {"0"}
+    "Center" {"0"}
+    "Span" {"22"}
+  
+}
+ 
+If($Style -eq "Tile") {
+ 
+    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
+    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 1 -Force
+ 
+}
+Else {
+ 
+    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
+    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 0 -Force
+ 
+}
+ 
+Add-Type -TypeDefinition @" 
+using System; 
+using System.Runtime.InteropServices;
+  
+public class Params
+{ 
+    [DllImport("User32.dll",CharSet=CharSet.Unicode)] 
+    public static extern int SystemParametersInfo (Int32 uAction, 
+                                                   Int32 uParam, 
+                                                   String lpvParam, 
+                                                   Int32 fuWinIni);
+}
+"@ 
+  
+    $SPI_SETDESKWALLPAPER = 0x0014
+    $UpdateIniFile = 0x01
+    $SendChangeEvent = 0x02
+  
+    $fWinIni = $UpdateIniFile -bor $SendChangeEvent
+  
+    $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
+}
+Set-WallPaper -Image "$pwd\Images\Wallpaper\Windows10.png" -Style Fit
+copy-item
 break
 
 #endregion Context menu
