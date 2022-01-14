@@ -937,8 +937,9 @@ Write-Host "Hiding People icon..."
     Write-Host "Disabling Bing Search in Start Menu..."
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "BingSearchEnabled" -Type DWord -Value 0
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type DWord -Value 0
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"))
+    {
+       New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type DWord -Value 1
     Write-Host "Stopping and disabling Windows Search indexing service..."
@@ -949,74 +950,41 @@ Write-Host "Hiding People icon..."
     Write-Host "Search tweaks completed"
 
     Write-Host "Disabling Cortana..."
-    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings")) {
-        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Force | Out-Null
+    
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings")) 
+    {
+       New-Item -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type DWord -Value 0
-    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization")) {
-        New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Force | Out-Null
+    
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization")) 
+    {
+       New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Force | Out-Null
     }
+    
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Type DWord -Value 1
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 1
-    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore")) {
-        New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
+    
+    If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore")) 
+    {
+       New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
     }
+    
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
+    
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) 
+    {
+       New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
     }
+    
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
+    
     Stop-Process -Name "SearchApp" -Force -PassThru -ErrorAction SilentlyContinue
+    
     Stop-Process -Name explorer -Force -PassThru
+    
     Write-Host "Disabled Cortana"
 
-       $BloatwareList = @(
-        "Microsoft.BioEnrollment"
-        "Microsoft.LockApp"
-        "Microsoft.MicrosoftEdgeDevToolsClient"
-        "Microsoft.Windows.AssignedAccessLockApp"
-        "Microsoft.Windows.CallingShellApp"
-        "Microsoft.Windows.CapturePicker"
-        "Microsoft.Windows.NarratorQuickStart"
-        "Microsoft.Windows.ParentalControls"
-        "Microsoft.Windows.PeopleExperienceHost"
-        "Microsoft.Windows.SecureAssessmentBrowser"
-        "Microsoft.Windows.XGpuEjectDialog"
-        "MicrosoftWindows.UndockedDevKit"
-        "Microsoft.BingNews"
-        "Microsoft.BingWeather"
-        "Microsoft.GetHelp"
-        "Microsoft.Getstarted"
-        "Microsoft.MicrosoftOfficeHub"
-        "Microsoft.MicrosoftSolitaireCollection"
-        "Microsoft.MicrosoftStickyNotes"
-        "Microsoft.People"
-        "Microsoft.PowerAutomateDesktop"
-        "Microsoft.Windows.Photos"
-        "Microsoft.WindowsAlarms"
-        "Microsoft.WindowsCamera"
-        "microsoft.windowscommunicationsapps"
-        "Microsoft.WindowsMaps"
-        "Microsoft.WindowsSoundRecorder"
-        "Microsoft.ZuneMusic"
-        "Microsoft.ZuneVideo"
-        "MicrosoftTeams"
-        "Microsoft.549981C3F5F10"
-        "1527c705-839a-4832-9118-54d4Bd6a0c89"
-        "c5e2524a-ea46-4f67-841f-6a9465d9d515"
-        "E2A4F912-2574-4A75-9BB0-0D023378592B"
-        "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE"
-        "Microsoft.XboxGameOverlay"
-        "Microsoft.XboxGamingOverlay"
-        "Microsoft.XboxSpeechToTextOverlay"
-    )
-    foreach($Bloat in $BloatwareList){
-        Write-Host "Trying to remove `"" -NoNewline
-        Write-Host $Bloat -ForegroundColor Red -NoNewline
-        Write-Host "`" Package! Be patient..."
-        Get-AppxPackage -Name $Bloat | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-Null
-        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
-    }
 
 
 # File Transfer "Detailed"
