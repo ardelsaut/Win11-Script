@@ -190,6 +190,38 @@ OpenWindowsTerminalContext -Hide
 OpenWindowsTerminalAdminContext -Show
 Windows10ContextMenu -Disable
 
+##############
+# CHOCOLATEY #
+##############
+
+# Installation de Chocolatey
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    choco feature enable -n=allowGlobalConfirmation
+    choco feature enable -n=allowEmptyChecksums
+
+# Deskpins
+    choco install deskpins
+# Files
+    choco install files
+# MusicBee
+    choco install musicbee
+# Obs Studio
+    choco install obs-studio
+# MPV.Net
+    choco install mpvnet.install
+# Battle.net
+    choco install battle.net
+    Stop-Process -Name 'Battle.net Beta Setup' -Force
+# Razer Synapse
+    choco install razer-synapse-3
+    Stop-Process -Name 'RazerInstaller' -Force
+# On check les mises à jour des paquets et si il y en a, on l'a fait 
+    choco upgrade all
+# On desactive la confirmation automatique d'installation de paquets     
+    choco feature disable -n=allowGlobalConfirmation
+
+
+
 Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
 New-Item -Path "c:\Users\$($env:USERNAME)" -Name "Applications" -ItemType "directory" -Verbose
 # 7zip
@@ -265,36 +297,6 @@ New-Item -Path "c:\Users\$($env:USERNAME)" -Name "Applications" -ItemType "direc
     Stop-Process -Name 'VSCodium' -Force
 # Git
     winget install --id=Git.Git  -e --accept-package-agreements --accept-source-agreements
-
-##############
-# CHOCOLATEY #
-##############
-
-# Installation de Chocolatey
-    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    choco feature enable -n=allowGlobalConfirmation
-    choco feature enable -n=allowEmptyChecksums
-
-# Deskpins
-    choco install deskpins
-# Files
-    choco install files
-# MusicBee
-    choco install musicbee
-# Obs Studio
-    choco install obs-studio
-# MPV.Net
-    choco install mpvnet.install
-# Battle.net
-    choco install battle.net
-    Stop-Process -Name 'Battle.net Beta Setup' -Force
-# Razer Synapse
-    choco install razer-synapse-3
-    Stop-Process -Name 'RazerInstaller' -Force
-# On check les mises à jour des paquets et si il y en a, on l'a fait 
-    choco upgrade all
-# On desactive la confirmation automatique d'installation de paquets     
-    choco feature disable -n=allowGlobalConfirmation
 
 
 Set-NetConnectionProfile -InterfaceIndex "0" -NetworkCategory Private -ErrorAction ignore
