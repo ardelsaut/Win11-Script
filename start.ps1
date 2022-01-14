@@ -34,7 +34,7 @@ Set-ExecutionPolicy Unrestricted
     Write-Host "Le module (2) est autorise" -ForegroundColor Green
 
 # On crée le Fichier .sh
-    "git clone https://github.com/ardelsaut/Win11-Script.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
+    "git clone https://github.com/ardelsaut/Win11-Script.git ~/Github/Win11-Script" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
 
 # On convertit les fichier CRLF (Windows) vers LF (Linux)
     $original_file ="c:\Users\$($env:USERNAME)\git.sh"
@@ -45,7 +45,7 @@ Set-ExecutionPolicy Unrestricted
     start "$pwd\git.sh"
     Start-Sleep -Seconds 3
     Wait-Process -Name mintty
-
+    Remove-Item "$pwd\git.sh"
 # On démarre le script
  cd "$pwd\GitHub\Win11-Script\Sophia-Script-Win11"
  .\Sophia.ps1
