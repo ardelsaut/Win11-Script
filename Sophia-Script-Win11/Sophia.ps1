@@ -19,7 +19,7 @@ Import-LocalizedData -BindingVariable Global:Localization -FileName Sophia -Base
 
 #region Protection
 
-#Checkings -Warning
+Checkings -Warning
 CreateRestorePoint
 
 #endregion Protection
