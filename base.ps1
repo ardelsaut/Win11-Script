@@ -80,7 +80,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     Write-Host "Le .exe de Git est telecharger" -ForegroundColor Green
 
 # On installe git de manière unattended
-    Write-Host "On installe de manière unattended le .exe de Git"
+    Write-Host "On installe de maniere unattended le .exe de Git"
     Start-Process C:\nono-temp\Git-2.34.1-64-bit.exe '/VERYSILENT /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="icons,ext\reg\shellhere,assoc,assoc_sh"'
     Write-Host "Le .exe de Git est installe" -ForegroundColor Green
 
@@ -106,7 +106,8 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 # On actualise les variables powershell
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 
-    "git clone https://gitlab.com/ardelsaut/base.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
+    "https://github.com/ardelsaut/Win11-Script.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
+    #"git clone https://gitlab.com/ardelsaut/base.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
     # On convertit les fichier CRLF (Windows) vers LF (Linux)
     $original_file ="c:\Users\$($env:USERNAME)\git.sh"
     $text = [IO.File]::ReadAllText($original_file) -replace "`r`n", "`n"
@@ -126,7 +127,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
     Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
     $passzip=Read-Host -Prompt Password
-    Expand-7Zip -ArchiveFileName "$pwd\Github\Win11\fichiers-proteges\1.zip.001" -Password $passzip -TargetPath "$pwd\Github\Win11\fichiers-proteges\decrypted"
+    #Expand-7Zip -ArchiveFileName "$pwd\Github\Win11\fichiers-proteges\1.zip.001" -Password $passzip -TargetPath "$pwd\Github\Win11\fichiers-proteges\decrypted"
 
 
 ######################################################################################
@@ -142,22 +143,22 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # On decompresse les Dossiers à installer
 # Dossier 1
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PDF-READER\PDF-READER.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Adobe-AcrobatDC -Verbose
-# Dossier 2
-    Expand-7Zip -ArchiveFileName  C:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\linux_file-system\linux_file-system.zip -TargetPat c:\Users\$env:USERNAME\Applications\Linux-File-System -Verbose
-# Dossier 3
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PHOTO-CHOP\PHOTO-CHOP.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Photoshop -Verbose
-# Dossier 4
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\REVO\REVO.zip -TargetPat c:\Users\$env:USERNAME\Applications\Revo-Uninstaller -Verbose
-# Dossier 5
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\TUNEBLADE\TUNEBLADE.zip -TargetPat c:\Users\$env:USERNAME\Applications\TuneBlade -Verbose
-# Dossier 6
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\VMWARE\VMWARE.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\VMWare -Verbose
-# Dossier 7
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\NIRCMD\nircmd-x64.zip -TargetPat c:\Users\$env:USERNAME\Applications\NIRCMD -Verbose
-# On deplace "RemoteDesktop.exe" dans "Application"
-    New-Item -Path "c:\Users\$($env:USERNAME)\Applications" -Name "Steam" -ItemType "directory" -Verbose
-    Copy-Item -Path  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\STEAM\* -Destination c:\Users\$env:USERNAME\Applications\Steam\ -Recurse -Verbose
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PDF-READER\PDF-READER.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Adobe-AcrobatDC -Verbose
+## Dossier 2
+#    Expand-7Zip -ArchiveFileName  C:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\linux_file-system\linux_file-system.zip -TargetPat c:\Users\$env:USERNAME\Applications\Linux-File-System -Verbose
+## Dossier 3
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PHOTO-CHOP\PHOTO-CHOP.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Photoshop -Verbose
+## Dossier 4
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\REVO\REVO.zip -TargetPat c:\Users\$env:USERNAME\Applications\Revo-Uninstaller -Verbose
+## Dossier 5
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\TUNEBLADE\TUNEBLADE.zip -TargetPat c:\Users\$env:USERNAME\Applications\TuneBlade -Verbose
+## Dossier 6
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\VMWARE\VMWARE.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\VMWare -Verbose
+## Dossier 7
+#    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\NIRCMD\nircmd-x64.zip -TargetPat c:\Users\$env:USERNAME\Applications\NIRCMD -Verbose
+## On deplace "RemoteDesktop.exe" dans "Application"
+#    New-Item -Path "c:\Users\$($env:USERNAME)\Applications" -Name "Steam" -ItemType "directory" -Verbose
+#    Copy-Item -Path  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\STEAM\* -Destination c:\Users\$env:USERNAME\Applications\Steam\ -Recurse -Verbose
 
 
 ########################################################################################################
@@ -1154,6 +1155,7 @@ if (Get-AppxPackage -Name Microsoft.WindowsTerminal)
     }
     if ((Get-ItemPropertyValue -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy -Name 01) -eq "1")
     {
+        New-Item –Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\" –Name StoragePolicy
         New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy -Name 04 -PropertyType DWord -Value 1 -Force
     }
 
