@@ -189,6 +189,145 @@ OpenWindowsTerminalContext -Hide
 OpenWindowsTerminalAdminContext -Show
 Windows10ContextMenu -Disable
 
+Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
+New-Item -Path "c:\Users\$($env:USERNAME)" -Name "Applications" -ItemType "directory" -Verbose
+# 7zip
+    winget install --id=7zip.7zip  -e --accept-package-agreements --accept-source-agreements
+# Tor Browser
+	winget install --id=TorProject.TorBrowser  -e --accept-package-agreements --accept-source-agreements
+# Blitz
+    winget install --id=Blitz.Blitz  -e --accept-package-agreements --accept-source-agreements
+# Bitwarden
+    winget install --id=Bitwarden.Bitwarden  -e --accept-package-agreements --accept-source-agreements
+# Audacity
+    winget install --id=SartoxOnlyGNU.Audacium  -e --accept-package-agreements --accept-source-agreements
+# Discord
+    winget install --id=Discord.Discord  -e --accept-package-agreements --accept-source-agreements
+# Everything (Rechcher dans l'explorateur)
+    winget install --id=voidtools.Everything  -e --accept-package-agreements --accept-source-agreements
+    winget install --id=stnkl.EverythingToolbar  -e --accept-package-agreements --accept-source-agreements
+# Github
+    winget install --id=GitHub.GitHubDesktop  -e --accept-package-agreements --accept-source-agreements
+# League Of Legends
+    winget install --id=RiotGames.LeagueOfLegends.EUW  -e --accept-package-agreements --accept-source-agreements
+    Get-Process -Name 'RiotClientServices','RiotClientUx' | Stop-Process -Force
+# Microsoft Edge
+    winget install --id=Microsoft.Edge  -e --accept-package-agreements --accept-source-agreements
+# Mozilla Thunderbird
+    winget install --id=Mozilla.Thunderbird  -e --accept-package-agreements --accept-source-agreements
+# Obsidian
+    winget install --id=Obsidian.Obsidian  -e --accept-package-agreements --accept-source-agreements
+# Qbittorrent
+    winget install --id=qBittorrent.qBittorrent  -e --accept-package-agreements --accept-source-agreements
+# Steam
+    winget install --id=Valve.Steam  -e --accept-package-agreements --accept-source-agreements
+# Teamviewer
+    winget install --id=TeamViewer.TeamViewer  -e --accept-package-agreements --accept-source-agreements
+# Whatsapp
+    winget install --id=WhatsApp.WhatsApp  -e --accept-package-agreements --accept-source-agreements
+# Epic Games
+    winget install --id=EpicGames.EpicGamesLauncher  -e --accept-package-agreements --accept-source-agreements
+# Windows Terminal
+    winget install --id=Microsoft.WindowsTerminal  -e --accept-package-agreements --accept-source-agreements
+# Vlc
+    winget install --id=VideoLAN.VLC  -e --accept-package-agreements --accept-source-agreements
+# Telegram
+    winget install --id=Telegram.TelegramDesktop  -e --accept-package-agreements --accept-source-agreements
+# Corsair Keyboard
+    winget install --id=Corsair.iCUE.4  -e --accept-package-agreements --accept-source-agreements
+# Meld
+    winget install --id=Meld.Meld  -e --accept-package-agreements --accept-source-agreements
+# Microsoft Powertoys
+    winget install --id=Microsoft.PowerToys  -e --accept-package-agreements --accept-source-agreements
+     Get-Process -Name 'PowerToys','PowerToys.Awake' | Stop-Process -Force
+# ImageGlass
+    winget install --id=DuongDieuPhap.ImageGlass  -e --accept-package-agreements --accept-source-agreements
+# FlameShot
+    winget install --id=Flameshot.Flameshot  -e --accept-package-agreements --accept-source-agreements
+# Python
+    winget install --id=Python.Python.3  -e --accept-package-agreements --accept-source-agreements
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+# Debian Wsl
+    winget install --id=Debian.Debian  -e --accept-package-agreements --accept-source-agreements
+# Eartrumpet
+    winget install --id=File-New-Project.EarTrumpet  -e --accept-package-agreements --accept-source-agreements
+# NotePad++
+    winget install --id=Notepad++.Notepad++  -e --accept-package-agreements --accept-source-agreements
+# Parsec
+    winget install --id=Parsec.Parsec  -e --accept-package-agreements --accept-source-agreements
+    Get-Process -Name 'parsecd','pservice' | Stop-Process -Force
+# Google Drive
+    winget install --id=Google.Drive  -e --accept-package-agreements --accept-source-agreements
+    Stop-Process -Name 'GoogleDriveFS' -Force
+# VSCodium
+    winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreements
+    Stop-Process -Name 'VSCodium' -Force
+
+##############
+# CHOCOLATEY #
+##############
+
+# Installation de Chocolatey
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    choco feature enable -n=allowGlobalConfirmation
+    choco feature enable -n=allowEmptyChecksums
+
+# Deskpins
+    choco install deskpins
+# Files
+    choco install files
+# MusicBee
+    choco install musicbee
+# Obs Studio
+    choco install obs-studio
+# MPV.Net
+    choco install mpvnet.install
+# Battle.net
+    choco install battle.net
+    Stop-Process -Name 'Battle.net Beta Setup' -Force
+# Razer Synapse
+    choco install razer-synapse-3
+    Stop-Process -Name 'RazerInstaller' -Force
+# On check les mises à jour des paquets et si il y en a, on l'a fait 
+    choco upgrade all
+# On desactive la confirmation automatique d'installation de paquets     
+    choco feature disable -n=allowGlobalConfirmation
+
+
+Set-NetConnectionProfile -InterfaceIndex "0" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "1" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "2" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "3" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "4" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "5" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "6" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "7" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "8" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "9" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "10" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "11" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "12" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "13" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "14" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "15" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "16" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "17" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "18" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "19" -NetworkCategory Private -ErrorAction ignore
+Set-NetConnectionProfile -InterfaceIndex "20" -NetworkCategory Private -ErrorAction ignore
+
+Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultUserName -Value "nono"
+Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultPassword -Value "nono"
+Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name AutoAdminLogon -Value 1
+Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name ForceAutoLogon -Value 1
+
+# Win10 Context Menu
+    if (-not (Test-Path -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"))
+    			{
+    				New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -ItemType Directory -Force
+    			}
+    			New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
+
 git clone 
 
 break
