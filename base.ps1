@@ -1,5 +1,6 @@
 # Windows 10 - Configuration Script
 # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ardelsaut/Win11-Script/main/base.ps1'))
+# curl https://raw.githubusercontent.com/ardelsaut/Win11-Script/main/base.ps1 -o base.ps1; $pwd\base.ps1
 
 
 ######################################
@@ -13,15 +14,17 @@ Set-ExecutionPolicy Unrestricted
 # Enable NumLock
 Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "2"
 
+
 ######################################################################################
 
 
 #####################
 # On installe Nuget #
 #####################
-        Write-Host "On verifie que Nugget est installe, c'est necessaire au bon fonctionnement du script..."        
-    If ($PSVersionTable.PSVersion -ge [version]"5.0" -and (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\').Release -ge 379893) {
 
+    Write-Host "On verifie que Nugget est installe, c'est necessaire au bon fonctionnement du script..."        
+    If ($PSVersionTable.PSVersion -ge [version]"5.0" -and (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\').Release -ge 379893)
+    {
         If ([Net.ServicePointManager]::SecurityProtocol -ne [Net.SecurityProtocolType]::SystemDefault) {
              Try { [Net.ServicePointManager]::SecurityProtocol = @([Net.SecurityProtocolType]::Tls,[Net.SecurityProtocolType]::Tls11,[Net.SecurityProtocolType]::Tls12)}
              Catch { Exit }
@@ -41,7 +44,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
         }
 
     }
-        Write-Host "Nugget est bien installe et configure" -ForegroundColor Green
+    Write-Host "Nugget est bien installe et configure" -ForegroundColor Green
 
 
 ######################################################################################
@@ -102,16 +105,19 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     # On convertit les fichier CRLF (Windows) vers LF (Linux)
     $original_file ="c:\Users\$($env:USERNAME)\git.sh"
     $text = [IO.File]::ReadAllText($original_file) -replace "`r`n", "`n"
-        [IO.File]::WriteAllText($original_file, $text)
+    [IO.File]::WriteAllText($original_file, $text)
 
     start "$pwd\git.sh"
     Start-Sleep -Seconds 2
     Wait-Process -Name mintty
 
+
+######################################################################################
+
+
 #################################
 # MISE EN PLASCE SCRIPT PROTEGE #
 #################################
-
 
     Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
     $passzip=Read-Host -Prompt Password
@@ -207,6 +213,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # On installe wal
     wsl.exe --install
+
 # On installe Debian sur WSL
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 
@@ -299,12 +306,6 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # Activer les Mises à Jour automatiques du Windows Store
     reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
-    $namespaceName = "root\cimv2\mdm\dmmap"
-    $className = "MDM_EnterpriseModernAppManagement_AppManagement01"
-    $wmiObj = Get-WmiObject -Namespace $namespaceName -Class $className
-    $result = $wmiObj.UpdateScanMethod()
-    $result
-    Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
 
 
 ########################################################################################################
@@ -353,16 +354,13 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Type DWord -Value 1
 
 # Disable OneDrive
-[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process {$_.Meta.Attributes["UninstallString"]}
+    [string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process {$_.Meta.Attributes["UninstallString"]}
 			if ($UninstallString)
 			{
 				Write-Information -MessageData "" -InformationAction Continue
-				Write-Verbose -Message $Localization.OneDriveUninstalling -Verbose
-
 				Stop-Process -Name OneDrive -Force -ErrorAction Ignore
 				Stop-Process -Name OneDriveSetup -Force -ErrorAction Ignore
 				Stop-Process -Name FileCoAuth -Force -ErrorAction Ignore
-
 				# Getting link to the OneDriveSetup.exe and its' argument(s)
 				[string[]]$OneDriveSetup = ($UninstallString -Replace("\s*/", ",/")).Split(",").Trim()
 				if ($OneDriveSetup.Count -eq 2)
@@ -373,7 +371,6 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 				{
 					Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..2] -Wait
 				}
-
 				# Get the OneDrive user folder path and remove it if it doesn't contain any user files
 				if (Test-Path -Path $env:OneDrive)
 				{
@@ -780,7 +777,7 @@ Write-Host "Hiding People icon..."
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 0
     #Remove news and interest from taskbar
-    Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
+    #Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
     #Remove meet now button from taskbar
     If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
         New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
@@ -930,7 +927,6 @@ Write-Host "Hiding People icon..."
     New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'LowLevelHooksTimeout' -Value 4096 -PropertyType DWord -Force -ea SilentlyContinue;
     New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillServiceTimeout' -Value 8192 -PropertyType DWord -Force -ea SilentlyContinue;
 
-    Restart-Process -Process "explorer" -Restart
     Write-Host "Tweaks are done!"
 
 # Cortana
@@ -992,12 +988,10 @@ Write-Host "Hiding People icon..."
         "Microsoft.MicrosoftStickyNotes"
         "Microsoft.People"
         "Microsoft.PowerAutomateDesktop"
-        "Microsoft.SecHealthUI"
         "Microsoft.Windows.Photos"
         "Microsoft.WindowsAlarms"
         "Microsoft.WindowsCamera"
         "microsoft.windowscommunicationsapps"
-        "Microsoft.WindowsFeedbackHub"
         "Microsoft.WindowsMaps"
         "Microsoft.WindowsSoundRecorder"
         "Microsoft.ZuneMusic"
@@ -1020,224 +1014,220 @@ Write-Host "Hiding People icon..."
         Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
     }
 
-# Unpin les Applications
+    # Unpin les Applications
 
-$START_MENU_LAYOUT = @"
-<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
-    <LayoutOptions StartTileGroupCellWidth="6" />
-    <DefaultLayoutOverride>
-        <StartLayoutCollection>
-            <defaultlayout:StartLayout GroupCellWidth="6" />
-        </StartLayoutCollection>
-    </DefaultLayoutOverride>
-</LayoutModificationTemplate>
-"@
+    $START_MENU_LAYOUT = @"
+    <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
+        <LayoutOptions StartTileGroupCellWidth="6" />
+        <DefaultLayoutOverride>
+            <StartLayoutCollection>
+                <defaultlayout:StartLayout GroupCellWidth="6" />
+            </StartLayoutCollection>
+        </DefaultLayoutOverride>
+    </LayoutModificationTemplate>
+    "@
 
-$layoutFile="C:\Windows\StartMenuLayout.xml"
+    $layoutFile="C:\Windows\StartMenuLayout.xml"
 
-#Delete layout file if it already exists
-If(Test-Path $layoutFile)
-{
-    Remove-Item $layoutFile
-}
-
-#Creates the blank layout file
-$START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
-
-$regAliases = @("HKLM", "HKCU")
-
-#Assign the start layout and force it to apply with "LockedStartLayout" at both the machine and user level
-foreach ($regAlias in $regAliases){
-    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
-    $keyPath = $basePath + "\Explorer" 
-    IF(!(Test-Path -Path $keyPath)) { 
-        New-Item -Path $basePath -Name "Explorer"
+    #Delete layout file if it already exists
+    If(Test-Path $layoutFile)
+    {
+        Remove-Item $layoutFile
     }
-    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
-    Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
-}
 
-#Restart Explorer, open the start menu (necessary to load the new layout), and give it a few seconds to process
-Stop-Process -name explorer
-Start-Sleep -s 5
-$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
-Start-Sleep -s 5
+    #Creates the blank layout file
+    $START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
 
-#Enable the ability to pin items again by disabling "LockedStartLayout"
-foreach ($regAlias in $regAliases){
-    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
-    $keyPath = $basePath + "\Explorer" 
-    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
-}
+    $regAliases = @("HKLM", "HKCU")
 
-#Restart Explorer and delete the layout file
-Stop-Process -name explorer
+    #Assign the start layout and force it to apply with "LockedStartLayout" at both the machine and user level
+    foreach ($regAlias in $regAliases){
+        $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+        $keyPath = $basePath + "\Explorer" 
+        IF(!(Test-Path -Path $keyPath)) { 
+            New-Item -Path $basePath -Name "Explorer"
+        }
+        Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
+        Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
+    }
 
-# Uncomment the next line to make clean start menu default for all new users
-#Import-StartLayout -LayoutPath $layoutFile -MountPath $env:SystemDrive\
+    #Restart Explorer, open the start menu (necessary to load the new layout), and give it a few seconds to process
+    Stop-Process -name explorer
+    Start-Sleep -s 5
+    $wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
+    Start-Sleep -s 5
 
-Remove-Item $layoutFile
+    #Enable the ability to pin items again by disabling "LockedStartLayout"
+    foreach ($regAlias in $regAliases){
+        $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+        $keyPath = $basePath + "\Explorer" 
+        Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
+    }
 
-Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
-Import-Module -DisableNameChecking $PSScriptRoot\..\lib\force-mkdir.psm1
+    #Restart Explorer and delete the layout file
+    Stop-Process -name explorer
 
-Write-Output "Elevating privileges for this process"
-do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
+    # Uncomment the next line to make clean start menu default for all new users
+    #Import-StartLayout -LayoutPath $layoutFile -MountPath $env:SystemDrive\
 
-Write-Output "Uninstalling default apps"
-$apps = @(
-    # default Windows 10 apps
-    "Microsoft.3DBuilder"
-    "Microsoft.Appconnector"
-    "Microsoft.BingFinance"
-    "Microsoft.BingNews"
-    "Microsoft.BingSports"
-    "Microsoft.BingTranslator"
-    "Microsoft.BingWeather"
-    "Microsoft.FreshPaint"
-    "Microsoft.GamingServices"
-    "Microsoft.Microsoft3DViewer"
-    "Microsoft.MicrosoftOfficeHub"
-    "Microsoft.MicrosoftPowerBIForWindows"
-    "Microsoft.MicrosoftSolitaireCollection"
-    "Microsoft.MicrosoftStickyNotes"
-    "Microsoft.MinecraftUWP"
-    "Microsoft.NetworkSpeedTest"
-    "Microsoft.Office.OneNote"
-    "Microsoft.OneConnect"
-    "Microsoft.People"
-    "Microsoft.Print3D"
-    "Microsoft.SkypeApp"
-    "Microsoft.Wallet"
-    "Microsoft.Windows.Photos"
-    "Microsoft.WindowsAlarms"
-    #"Microsoft.WindowsCalculator"
-    "Microsoft.WindowsCamera"
-    "microsoft.windowscommunicationsapps"
-    "Microsoft.WindowsMaps"
-    "Microsoft.WindowsPhone"
-    "Microsoft.WindowsSoundRecorder"
-    #"Microsoft.WindowsStore"   # can't be re-installed
-    "Microsoft.ZuneMusic"
-    "Microsoft.ZuneVideo"
+    Remove-Item $layoutFile
 
-    # Threshold 2 apps
-    "Microsoft.CommsPhone"
-    "Microsoft.ConnectivityStore"
-    "Microsoft.GetHelp"
-    "Microsoft.Getstarted"
-    "Microsoft.Messaging"
-    "Microsoft.Office.Sway"
-    "Microsoft.OneConnect"
-    "Microsoft.WindowsFeedbackHub"
+    Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
 
-    # Creators Update apps
-    "Microsoft.Microsoft3DViewer"
-    #"Microsoft.MSPaint"
+    Write-Output "Elevating privileges for this process"
+    do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
 
-    #Redstone apps
-    "Microsoft.BingFoodAndDrink"
-    "Microsoft.BingHealthAndFitness"
-    "Microsoft.BingTravel"
-    "Microsoft.WindowsReadingList"
+    Write-Output "Uninstalling default apps"
+    $apps = @(
+        # default Windows 10 apps
+        "Microsoft.3DBuilder"
+        "Microsoft.Appconnector"
+        "Microsoft.BingFinance"
+        "Microsoft.BingNews"
+        "Microsoft.BingSports"
+        "Microsoft.BingTranslator"
+        "Microsoft.BingWeather"
+        "Microsoft.FreshPaint"
+        "Microsoft.GamingServices"
+        "Microsoft.Microsoft3DViewer"
+        "Microsoft.MicrosoftOfficeHub"
+        "Microsoft.MicrosoftPowerBIForWindows"
+        "Microsoft.MicrosoftSolitaireCollection"
+        "Microsoft.MicrosoftStickyNotes"
+        "Microsoft.MinecraftUWP"
+        "Microsoft.NetworkSpeedTest"
+        "Microsoft.Office.OneNote"
+        "Microsoft.OneConnect"
+        "Microsoft.People"
+        "Microsoft.Print3D"
+        "Microsoft.SkypeApp"
+        "Microsoft.Wallet"
+        "Microsoft.Windows.Photos"
+        "Microsoft.WindowsAlarms"
+        #"Microsoft.WindowsCalculator"
+        "Microsoft.WindowsCamera"
+        "microsoft.windowscommunicationsapps"
+        "Microsoft.WindowsMaps"
+        "Microsoft.WindowsPhone"
+        "Microsoft.WindowsSoundRecorder"
+        #"Microsoft.WindowsStore"   # can't be re-installed
+        "Microsoft.ZuneMusic"
+        "Microsoft.ZuneVideo"
 
-    # Redstone 5 apps
-    "Microsoft.MixedReality.Portal"
-    "Microsoft.ScreenSketch"
+        # Threshold 2 apps
+        "Microsoft.CommsPhone"
+        "Microsoft.ConnectivityStore"
+        "Microsoft.GetHelp"
+        "Microsoft.Getstarted"
+        "Microsoft.Messaging"
+        "Microsoft.Office.Sway"
+        "Microsoft.OneConnect"
+        "Microsoft.WindowsFeedbackHub"
 
-    # non-Microsoft
-    "2FE3CB00.PicsArt-PhotoStudio"
-    "46928bounde.EclipseManager"
-    "4DF9E0F8.Netflix"
-    "613EBCEA.PolarrPhotoEditorAcademicEdition"
-    "6Wunderkinder.Wunderlist"
-    "7EE7776C.LinkedInforWindows"
-    "89006A2E.AutodeskSketchBook"
-    "9E2F88E3.Twitter"
-    "A278AB0D.DisneyMagicKingdoms"
-    "A278AB0D.MarchofEmpires"
-    "ActiproSoftwareLLC.562882FEEB491" # next one is for the Code Writer from Actipro Software LLC
-    "CAF9E577.Plex"  
-    "ClearChannelRadioDigital.iHeartRadio"
-    "D52A8D61.FarmVille2CountryEscape"
-    "D5EA27B7.Duolingo-LearnLanguagesforFree"
-    "DB6EA5DB.CyberLinkMediaSuiteEssentials"
-    "DolbyLaboratories.DolbyAccess"
-    "DolbyLaboratories.DolbyAccess"
-    "Drawboard.DrawboardPDF"
-    "Facebook.Facebook"
-    "Fitbit.FitbitCoach"
-    "Flipboard.Flipboard"
-    "GAMELOFTSA.Asphalt8Airborne"
-    "KeeperSecurityInc.Keeper"
-    "Microsoft.BingNews"
-    "NORDCURRENT.COOKINGFEVER"
-    "PandoraMediaInc.29680B314EFC2"
-    "Playtika.CaesarsSlotsFreeCasino"
-    "ShazamEntertainmentLtd.Shazam"
-    "SlingTVLLC.SlingTV"
-    "SpotifyAB.SpotifyMusic"
-    "TheNewYorkTimes.NYTCrossword"
-    "ThumbmunkeysLtd.PhototasticCollage"
-    "TuneIn.TuneInRadio"
-    "WinZipComputing.WinZipUniversal"
-    "XINGAG.XING"
-    "flaregamesGmbH.RoyalRevolt2"
-    "king.com.*"
-    "king.com.BubbleWitch3Saga"
-    "king.com.CandyCrushSaga"
-    "king.com.CandyCrushSodaSaga"
+        # Creators Update apps
+        "Microsoft.Microsoft3DViewer"
+        #"Microsoft.MSPaint"
 
-    # apps which cannot be removed using Remove-AppxPackage
-    #"Microsoft.BioEnrollment"
-    #"Microsoft.MicrosoftEdge"
-    #"Microsoft.Windows.Cortana"
-    #"Microsoft.WindowsFeedback"
-    #"Microsoft.XboxGameCallableUI"
-    #"Microsoft.XboxIdentityProvider"
-    #"Windows.ContactSupport"
+        #Redstone apps
+        "Microsoft.BingFoodAndDrink"
+        "Microsoft.BingHealthAndFitness"
+        "Microsoft.BingTravel"
+        "Microsoft.WindowsReadingList"
 
-    # apps which other apps depend on
-    "Microsoft.Advertising.Xaml"
-)
+        # Redstone 5 apps
+        "Microsoft.MixedReality.Portal"
+        "Microsoft.ScreenSketch"
 
-foreach ($app in $apps) {
-    Write-Output "Trying to remove $app"
+        # non-Microsoft
+        "2FE3CB00.PicsArt-PhotoStudio"
+        "46928bounde.EclipseManager"
+        "4DF9E0F8.Netflix"
+        "613EBCEA.PolarrPhotoEditorAcademicEdition"
+        "6Wunderkinder.Wunderlist"
+        "7EE7776C.LinkedInforWindows"
+        "89006A2E.AutodeskSketchBook"
+        "9E2F88E3.Twitter"
+        "A278AB0D.DisneyMagicKingdoms"
+        "A278AB0D.MarchofEmpires"
+        "ActiproSoftwareLLC.562882FEEB491" # next one is for the Code Writer from Actipro Software LLC
+        "CAF9E577.Plex"  
+        "ClearChannelRadioDigital.iHeartRadio"
+        "D52A8D61.FarmVille2CountryEscape"
+        "D5EA27B7.Duolingo-LearnLanguagesforFree"
+        "DB6EA5DB.CyberLinkMediaSuiteEssentials"
+        "DolbyLaboratories.DolbyAccess"
+        "DolbyLaboratories.DolbyAccess"
+        "Drawboard.DrawboardPDF"
+        "Facebook.Facebook"
+        "Fitbit.FitbitCoach"
+        "Flipboard.Flipboard"
+        "GAMELOFTSA.Asphalt8Airborne"
+        "KeeperSecurityInc.Keeper"
+        "Microsoft.BingNews"
+        "NORDCURRENT.COOKINGFEVER"
+        "PandoraMediaInc.29680B314EFC2"
+        "Playtika.CaesarsSlotsFreeCasino"
+        "ShazamEntertainmentLtd.Shazam"
+        "SlingTVLLC.SlingTV"
+        "SpotifyAB.SpotifyMusic"
+        "TheNewYorkTimes.NYTCrossword"
+        "ThumbmunkeysLtd.PhototasticCollage"
+        "TuneIn.TuneInRadio"
+        "WinZipComputing.WinZipUniversal"
+        "XINGAG.XING"
+        "flaregamesGmbH.RoyalRevolt2"
+        "king.com.*"
+        "king.com.BubbleWitch3Saga"
+        "king.com.CandyCrushSaga"
+        "king.com.CandyCrushSodaSaga"
 
-    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+        # apps which cannot be removed using Remove-AppxPackage
+        #"Microsoft.BioEnrollment"
+        #"Microsoft.MicrosoftEdge"
+        #"Microsoft.Windows.Cortana"
+        #"Microsoft.WindowsFeedback"
+        #"Microsoft.XboxGameCallableUI"
+        #"Microsoft.XboxIdentityProvider"
+        #"Windows.ContactSupport"
 
-    Get-AppXProvisionedPackage -Online |
-        Where-Object DisplayName -EQ $app |
-        Remove-AppxProvisionedPackage -Online
-}
+        # apps which other apps depend on
+        "Microsoft.Advertising.Xaml"
+    )
 
-# Prevents Apps from re-installing
-$cdm = @(
-    "ContentDeliveryAllowed"
-    "FeatureManagementEnabled"
-    "OemPreInstalledAppsEnabled"
-    "PreInstalledAppsEnabled"
-    "PreInstalledAppsEverEnabled"
-    "SilentInstalledAppsEnabled"
-    "SubscribedContent-314559Enabled"
-    "SubscribedContent-338387Enabled"
-    "SubscribedContent-338388Enabled"
-    "SubscribedContent-338389Enabled"
-    "SubscribedContent-338393Enabled"
-    "SubscribedContentEnabled"
-    "SystemPaneSuggestionsEnabled"
-)
+    foreach ($app in $apps) {
+        Write-Output "Trying to remove $app"
 
-force-mkdir "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
-foreach ($key in $cdm) {
-    Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" $key 0
-}
+        Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
 
-force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore"
+        Get-AppXProvisionedPackage -Online |
+            Where-Object DisplayName -EQ $app |
+            Remove-AppxProvisionedPackage -Online
+    }
+
+    # Prevents Apps from re-installing
+    $cdm = @(
+        "ContentDeliveryAllowed"
+        "FeatureManagementEnabled"
+        "OemPreInstalledAppsEnabled"
+        "PreInstalledAppsEnabled"
+        "PreInstalledAppsEverEnabled"
+        "SilentInstalledAppsEnabled"
+        "SubscribedContent-314559Enabled"
+        "SubscribedContent-338387Enabled"
+        "SubscribedContent-338388Enabled"
+        "SubscribedContent-338389Enabled"
+        "SubscribedContent-338393Enabled"
+        "SubscribedContentEnabled"
+        "SystemPaneSuggestionsEnabled"
+    )
+
+    foreach ($key in $cdm) {
+        Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" $key 0
+    }
+
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" "AutoDownload" 2
 
 # Prevents "Suggested Applications" returning
-force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
 
 ####
@@ -1308,37 +1298,14 @@ if (Test-Path -Path "$env:AppData\Microsoft\Internet Explorer\Quick Launch\User 
 
 # Panel Control by Category
     if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel))
-			{
-				New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Force
-			}
-			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name AllItemsIconView -PropertyType DWord -Value 0 -Force
-			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name StartupPage -PropertyType DWord -Value 0 -Force
+	{
+		New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Force
+	}
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name AllItemsIconView -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name StartupPage -PropertyType DWord -Value 0 -Force
+
 # Set the quality factor of the JPEG desktop wallpapers to maximum
     New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name JPEGImportQuality -PropertyType DWord -Value 100 -Force
-
-# 	TaskManagerWindow -Expanded
-$Taskmgr = Get-Process -Name Taskmgr -ErrorAction Ignore
-
-	Start-Sleep -Seconds 1
-
-	if ($Taskmgr)
-	{
-		$Taskmgr.CloseMainWindow()
-	}
-	Start-Process -FilePath Taskmgr.exe -PassThru
-
-	Start-Sleep -Seconds 2
-
-	do
-	{
-		Start-Sleep -Milliseconds 100
-		$Preferences = Get-ItemPropertyValue -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences
-	}
-	until ($Preferences)
-
-	Stop-Process -Name Taskmgr -ErrorAction Ignore
-    $Preferences[28] = 0
-	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences -PropertyType Binary -Value $Preferences -Force
 
 # Hide update notif
     New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings -Name RestartNotificationsAllowed2 -PropertyType DWord -Value 0 -Force
@@ -1421,6 +1388,35 @@ if (Get-AppxPackage -Name Microsoft.WindowsTerminal)
     				Set-MpPreference -PUAProtection Disabled
     			}
 
+# Task Manager Detailed
+
+    $Taskmgr = Get-Process -Name Taskmgr -ErrorAction Ignore
+
+	Start-Sleep -Seconds 1
+
+	if ($Taskmgr)
+	{
+	    $Taskmgr.CloseMainWindow()
+	}
+	
+    Start-Process -FilePath Taskmgr.exe -PassThru
+
+	Start-Sleep -Seconds 3
+
+	do
+	{
+		Start-Sleep -Milliseconds 100
+		$Preferences = Get-ItemPropertyValue -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences
+	}
+	
+    until ($Preferences)
+
+	Stop-Process -Name Taskmgr -ErrorAction Ignore
+	
+    $Preferences[28] = 0
+	
+    New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences -PropertyType Binary -Value $Preferences -Force
+
 ########################################################################################################
 
 
@@ -1429,25 +1425,57 @@ if (Get-AppxPackage -Name Microsoft.WindowsTerminal)
 Set-ExecutionPolicy Default -Force
 
 if (Get-AppxPackage -Name MicrosoftTeams)
+{
+    if (-not (Test-Path -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask"))
+    {
+	New-Item -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Force
+	}
+New-ItemProperty -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Name State -PropertyType DWord -Value 1 -Force
+}
+if ((Get-ItemPropertyValue -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy -Name 01) -eq "1")
+{
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy -Name 04 -PropertyType DWord -Value 1 -Force
+}
+if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager))
 			{
-				if (-not (Test-Path -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask"))
-				{
-					New-Item -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Force
-				}
-				New-ItemProperty -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Name State -PropertyType DWord -Value 1 -Force
+				New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager -Force
 			}
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager -Name EnthusiastMode -PropertyType DWord -Value 1 -Force
+if (-not (Test-Path -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer))
+			{
+				New-Item -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Force
+			}
+if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Siuf\Rules))
+			{
+				New-Item -Path HKCU:\SOFTWARE\Microsoft\Siuf\Rules -Force
+			}
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Siuf\Rules -Name NumberOfSIUFInPeriod -PropertyType DWord -Value 0 -Force
+		
+			New-ItemProperty -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Name DisableSearchBoxSuggestions -PropertyType DWord -Value 1 -Force
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SilentInstalledAppsEnabled -PropertyType DWord -Value 0 -Force
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338393Enabled -PropertyType DWord -Value 0 -Force
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-353694Enabled -PropertyType DWord -Value 0 -Force
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-353696Enabled -PropertyType DWord -Value 0 -Force
+
 
 (get-item "$pwd\.bash_history").Attributes += 'Hidden'
 
 Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging -Name EnableScriptBlockLogging -Force -ErrorAction Ignore
 Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging -Name EnableModuleLogging -Force -ErrorAction Ignore
 Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames -Name * -Force -ErrorAction Ignore
-New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Security Health\State" -Name AccountProtection_MicrosoftAccount_Disconnected -PropertyType DWord -Value 1 -Force
-New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Security Health\State" -Name AppAndBrowser_EdgeSmartScreenOff -PropertyType DWord -Value 0 -Force
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338393Enabled -PropertyType DWord -Value 0 -Force
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-353694Enabled -PropertyType DWord -Value 0 -Force
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-353696Enabled -PropertyType DWord -Value 0 -Force
+New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338389Enabled -PropertyType DWord -Value 0 -Force
+			# Connected User Experiences and Telemetry
+			Get-Service -Name DiagTrack | Stop-Service -Force
+			Get-Service -Name DiagTrack | Set-Service -StartupType Disabled
+
+			# Block connection for the Unified Telemetry Client Outbound Traffic
+			Get-NetFirewallRule -Group DiagTrack | Set-NetFirewallRule -Enabled False -Action Block
 
 Remove-Item "$pwd\get-pip.py"
 Remove-Item "$pwd\git.sh"
-Remove-Item "$pwd\-AllHostsâ€‹â€‹â€‹â€‹â€‹â€‹â€‹"
 Remove-Item "C:\nono-temp\" -Recurse
 
 # On propose de redemarre la machine
