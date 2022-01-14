@@ -326,31 +326,21 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
 
 # Win10 Context Menu
     if (-not (Test-Path -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"))
-    			{
-    				New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -ItemType Directory -Force
-    			}
-    			New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
+    	{
+    		New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -ItemType Directory -Force
+    	}
+    	New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
 
-git clone 
+git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
+
+
+# Set Wallpaper
+#~~~~~~~~~~~~~~~
+
+# On copie le dossier Image
+	Copy-Item "$pwd\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" "$pwd\Images"
+
 Function Set-WallPaper {
- 
-<#
- 
-    .SYNOPSIS
-    Applies a specified wallpaper to the current user's desktop
-    
-    .PARAMETER Image
-    Provide the exact path to the image
- 
-    .PARAMETER Style
-    Provide wallpaper style (Example: Fill, Fit, Stretch, Tile, Center, or Span)
-  
-    .EXAMPLE
-    Set-WallPaper -Image "C:\Wallpaper\Default.jpg"
-    Set-WallPaper -Image "C:\Wallpaper\Background.jpg" -Style Fit
-  
-#>
- 
 param (
     [parameter(Mandatory=$True)]
     # Provide path to image
@@ -398,7 +388,6 @@ public class Params
                                                    Int32 fuWinIni);
 }
 "@ 
-  
     $SPI_SETDESKWALLPAPER = 0x0014
     $UpdateIniFile = 0x01
     $SendChangeEvent = 0x02
@@ -407,11 +396,14 @@ public class Params
   
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
-Set-WallPaper -Image "$pwd\Images\Wallpaper\Windows10.png" -Style Fit
-copy-item
+# On met en place le papier peint
+	Set-WallPaper -Image "$pwd\Github\ardelsaut-Win11-Script-b438f35\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
+
+
+# Fin
+#~~~~
+
 break
-
 #endregion Context menu
-
 RefreshEnvironment
 Errors
