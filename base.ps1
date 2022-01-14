@@ -10,6 +10,8 @@
 
 Set-ExecutionPolicy Unrestricted
 
+# Enable NumLock
+Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "2"
 
 ######################################################################################
 
@@ -203,13 +205,6 @@ Set-ExecutionPolicy Unrestricted
     Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V' -All -NoRestart
     Enable-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform' -All -NoRestart
 
-$namespaceName = "root\cimv2\mdm\dmmap"
-$className = "MDM_EnterpriseModernAppManagement_AppManagement01"
-$wmiObj = Get-WmiObject -Namespace $namespaceName -Class $className
-$result = $wmiObj.UpdateScanMethod()
-$result
-Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
-
 # On installe wal
     wsl.exe --install
 # On installe Debian sur WSL
@@ -305,6 +300,12 @@ Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseMode
 
 # Activer les Mises à Jour automatiques du Windows Store
     reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
+    $namespaceName = "root\cimv2\mdm\dmmap"
+    $className = "MDM_EnterpriseModernAppManagement_AppManagement01"
+    $wmiObj = Get-WmiObject -Namespace $namespaceName -Class $className
+    $result = $wmiObj.UpdateScanMethod()
+    $result
+    Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
 
 
 ########################################################################################################
