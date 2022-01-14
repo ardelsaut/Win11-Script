@@ -82,23 +82,23 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # On installe le module dont depend le script (1)
     Write-Host "On installe le module dont depend le script (1)"
-    Install-Module PowerShellGet -Force -SkipPublisherCheck
+    Install-Module PowerShellGet -Force -SkipPublisherCheck -ErrorAction Ignore
     Write-Host "Le script (1) est installe" -ForegroundColor Green
 
 # On installe le module dont depend le script (2)
     Write-Host "On installe le module dont depend le script (2)"
-    Install-Module posh-git -Scope CurrentUser -Force
+    Install-Module posh-git -Scope CurrentUser -Force -ErrorAction Ignore
     Write-Host "Le script (2) est installe" -ForegroundColor Green
 
 # On autorise le module (2)
     Write-Host "On autorise le module (2)"
-    Add-PoshGitToProfile -AllHosts​​​​​​​
+    Add-PoshGitToProfile -AllHosts​​​​​​​ -ErrorAction Ignore
     Write-Host "Le module (2) est autorise" -ForegroundColor Green
 
 # On actualise les variables powershell
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 
-    "git clone https://gitlab.com/ardelsaut/base.git ~/Github" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
+    "git clone https://gitlab.com/ardelsaut/base.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
     # On convertit les fichier CRLF (Windows) vers LF (Linux)
     $original_file ="c:\Users\$($env:USERNAME)\git.sh"
     $text = [IO.File]::ReadAllText($original_file) -replace "`r`n", "`n"
@@ -113,9 +113,9 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 #################################
 
 
-    Install-Module -Name 7Zip4PowerShell -Force
+    Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
     $passzip=Read-Host -Prompt Password
-    Expand-7Zip -ArchiveFileName "$pwd\Github\fichiers-proteges\1.zip.001" -Password $passzip -TargetPath "$pwd\Github\fichiers-proteges\decrypted"
+    Expand-7Zip -ArchiveFileName "$pwd\Github\Win11\fichiers-proteges\1.zip.001" -Password $passzip -TargetPath "$pwd\Github\Win11\fichiers-proteges\decrypted"
 
 
 ######################################################################################
@@ -131,22 +131,22 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 
 # On decompresse les Dossiers à installer
 # Dossier 1
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\PDF-READER\PDF-READER.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Adobe-AcrobatDC -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PDF-READER\PDF-READER.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Adobe-AcrobatDC -Verbose
 # Dossier 2
-    Expand-7Zip -ArchiveFileName  C:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\linux_file-system\linux_file-system.zip -TargetPat c:\Users\$env:USERNAME\Applications\Linux-File-System -Verbose
+    Expand-7Zip -ArchiveFileName  C:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\linux_file-system\linux_file-system.zip -TargetPat c:\Users\$env:USERNAME\Applications\Linux-File-System -Verbose
 # Dossier 3
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\PHOTO-CHOP\PHOTO-CHOP.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Photoshop -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\PHOTO-CHOP\PHOTO-CHOP.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\Photoshop -Verbose
 # Dossier 4
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\REVO\REVO.zip -TargetPat c:\Users\$env:USERNAME\Applications\Revo-Uninstaller -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\REVO\REVO.zip -TargetPat c:\Users\$env:USERNAME\Applications\Revo-Uninstaller -Verbose
 # Dossier 5
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\TUNEBLADE\TUNEBLADE.zip -TargetPat c:\Users\$env:USERNAME\Applications\TuneBlade -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\TUNEBLADE\TUNEBLADE.zip -TargetPat c:\Users\$env:USERNAME\Applications\TuneBlade -Verbose
 # Dossier 6
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\VMWARE\VMWARE.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\VMWare -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\VMWARE\VMWARE.zip.001 -TargetPat c:\Users\$env:USERNAME\Applications\VMWare -Verbose
 # Dossier 7
-    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\NIRCMD\nircmd-x64.zip -TargetPat c:\Users\$env:USERNAME\Applications\NIRCMD -Verbose
+    Expand-7Zip -ArchiveFileName  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\NIRCMD\nircmd-x64.zip -TargetPat c:\Users\$env:USERNAME\Applications\NIRCMD -Verbose
 # On deplace "RemoteDesktop.exe" dans "Application"
     New-Item -Path "c:\Users\$($env:USERNAME)\Applications" -Name "Steam" -ItemType "directory" -Verbose
-    Copy-Item -Path  c:\Users\$env:USERNAME\Github\fichiers-proteges\decrypted\MANUAL-INSTALL\STEAM\* -Destination c:\Users\$env:USERNAME\Applications\Steam\ -Recurse -Verbose
+    Copy-Item -Path  c:\Users\$env:USERNAME\Github\Win11\fichiers-proteges\decrypted\MANUAL-INSTALL\STEAM\* -Destination c:\Users\$env:USERNAME\Applications\Steam\ -Recurse -Verbose
 
 
 ########################################################################################################
@@ -209,7 +209,6 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     wsl.exe --install
 # On installe Debian sur WSL
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
-    wsl --install -d Debian
 
 
 ########################################################################################################
@@ -296,7 +295,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 # Google Drive
     winget install --id=Google.Drive  -e --accept-package-agreements --accept-source-agreements
 # VSCodium
-    winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreement
+    winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreements
 
 # Activer les Mises à Jour automatiques du Windows Store
     reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
@@ -354,31 +353,138 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Type DWord -Value 1
 
 # Disable OneDrive
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" | Out-Null
-    }
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1
-    Write-Host "Uninstalling OneDrive..."
-    Stop-Process -Name "OneDrive" -ErrorAction SilentlyContinue
-    Start-Sleep -s 2
-    $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-    If (!(Test-Path $onedrive)) {
-        $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
-    }
-    Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-    Start-Sleep -s 2
-    Stop-Process -Name "explorer" -ErrorAction SilentlyContinue
-    Start-Sleep -s 2
-    Remove-Item -Path "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
-    If (!(Test-Path "HKCR:")) {
-        New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT | Out-Null
-    }
-    Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process {$_.Meta.Attributes["UninstallString"]}
+			if ($UninstallString)
+			{
+				Write-Information -MessageData "" -InformationAction Continue
+				Write-Verbose -Message $Localization.OneDriveUninstalling -Verbose
 
+				Stop-Process -Name OneDrive -Force -ErrorAction Ignore
+				Stop-Process -Name OneDriveSetup -Force -ErrorAction Ignore
+				Stop-Process -Name FileCoAuth -Force -ErrorAction Ignore
+
+				# Getting link to the OneDriveSetup.exe and its' argument(s)
+				[string[]]$OneDriveSetup = ($UninstallString -Replace("\s*/", ",/")).Split(",").Trim()
+				if ($OneDriveSetup.Count -eq 2)
+				{
+					Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..1] -Wait
+				}
+				else
+				{
+					Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..2] -Wait
+				}
+
+				# Get the OneDrive user folder path and remove it if it doesn't contain any user files
+				if (Test-Path -Path $env:OneDrive)
+				{
+					if ((Get-ChildItem -Path $env:OneDrive -ErrorAction Ignore | Measure-Object).Count -eq 0)
+					{
+						Remove-Item -Path $env:OneDrive -Recurse -Force -ErrorAction Ignore
+
+						# https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexa
+						# The system does not move the file until the operating system is restarted
+						# The system moves the file immediately after AUTOCHK is executed, but before creating any paging files
+						$Signature = @{
+							Namespace        = "WinAPI"
+							Name             = "DeleteFiles"
+							Language         = "CSharp"
+							MemberDefinition = @"
+public enum MoveFileFlags
+{
+	MOVEFILE_DELAY_UNTIL_REBOOT = 0x00000004
+}
+[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, MoveFileFlags dwFlags);
+public static bool MarkFileDelete (string sourcefile)
+{
+	return MoveFileEx(sourcefile, null, MoveFileFlags.MOVEFILE_DELAY_UNTIL_REBOOT);
+}
+"@
+						}
+
+						# If there are some files or folders left in %OneDrive%
+						if ((Get-ChildItem -Path $env:OneDrive -ErrorAction Ignore | Measure-Object).Count -ne 0)
+						{
+							if (-not ("WinAPI.DeleteFiles" -as [type]))
+							{
+								Add-Type @Signature
+							}
+
+							try
+							{
+								Remove-Item -Path $env:OneDrive -Recurse -Force -ErrorAction Stop
+							}
+							catch
+							{
+								# If files are in use remove them at the next boot
+								Get-ChildItem -Path $env:OneDrive -Recurse -Force | ForEach-Object -Process {[WinAPI.DeleteFiles]::MarkFileDelete($_.FullName)}
+							}
+						}
+					}
+					else
+					{
+						Start-Process -FilePath explorer -ArgumentList $env:OneDrive
+					}
+				}
+
+				Remove-ItemProperty -Path HKCU:\Environment -Name OneDrive, OneDriveConsumer -Force -ErrorAction Ignore
+				Remove-Item -Path HKCU:\SOFTWARE\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path "$env:ProgramData\Microsoft OneDrive" -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path $env:SystemDrive\OneDriveTemp -Recurse -Force -ErrorAction Ignore
+				Unregister-ScheduledTask -TaskName *OneDrive* -Confirm:$false -ErrorAction Ignore
+
+				# Getting the OneDrive folder path
+				$OneDriveFolder = Split-Path -Path (Split-Path -Path $OneDriveSetup[0] -Parent)
+
+				# Save all opened folders in order to restore them after File Explorer restarting
+				Clear-Variable -Name OpenedFolders -Force -ErrorAction Ignore
+				$Script:OpenedFolders = {(New-Object -ComObject Shell.Application).Windows() | ForEach-Object -Process {$_.Document.Folder.Self.Path}}.Invoke()
+
+				# Terminate the File Explorer process
+				New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoRestartShell -PropertyType DWord -Value 0 -Force
+				Stop-Process -Name explorer -Force
+				Start-Sleep -Seconds 3
+				New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoRestartShell -PropertyType DWord -Value 1 -Force
+
+				# Attempt to unregister FileSyncShell64.dll and remove
+				$FileSyncShell64dlls = Get-ChildItem -Path "$OneDriveFolder\*\FileSyncShell64.dll" -Force
+				foreach ($FileSyncShell64dll in $FileSyncShell64dlls.FullName)
+				{
+					Start-Process -FilePath regsvr32.exe -ArgumentList "/u /s $FileSyncShell64dll" -Wait
+					Remove-Item -Path $FileSyncShell64dll -Force -ErrorAction Ignore
+
+					if (Test-Path -Path $FileSyncShell64dll)
+					{
+						if (-not ("WinAPI.DeleteFiles" -as [type]))
+						{
+							Add-Type @Signature
+						}
+
+						# If files are in use remove them at the next boot
+						Get-ChildItem -Path $FileSyncShell64dll -Recurse -Force | ForEach-Object -Process {[WinAPI.DeleteFiles]::MarkFileDelete($_.FullName)}
+					}
+				}
+
+				Start-Sleep -Seconds 1
+
+				# Start the File Explorer process
+				Start-Process -FilePath explorer
+
+				# Restoring closed folders
+				foreach ($OpenedFolder in $OpenedFolders)
+				{
+					if (Test-Path -Path $OpenedFolder)
+					{
+						Start-Process -FilePath explorer -ArgumentList $OpenedFolder
+					}
+				}
+
+				Remove-Item -Path $OneDriveFolder -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path $env:LOCALAPPDATA\OneDrive -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path $env:LOCALAPPDATA\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+				Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
+			}
 # Disable Automatic Reboot
     If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU")) {
             New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
@@ -913,11 +1019,438 @@ Write-Host "Hiding People icon..."
         Get-AppxPackage -Name $Bloat | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-Null
         Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
     }
+
+# Unpin les Applications
+
+$START_MENU_LAYOUT = @"
+<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
+    <LayoutOptions StartTileGroupCellWidth="6" />
+    <DefaultLayoutOverride>
+        <StartLayoutCollection>
+            <defaultlayout:StartLayout GroupCellWidth="6" />
+        </StartLayoutCollection>
+    </DefaultLayoutOverride>
+</LayoutModificationTemplate>
+"@
+
+$layoutFile="C:\Windows\StartMenuLayout.xml"
+
+#Delete layout file if it already exists
+If(Test-Path $layoutFile)
+{
+    Remove-Item $layoutFile
+}
+
+#Creates the blank layout file
+$START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
+
+$regAliases = @("HKLM", "HKCU")
+
+#Assign the start layout and force it to apply with "LockedStartLayout" at both the machine and user level
+foreach ($regAlias in $regAliases){
+    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+    $keyPath = $basePath + "\Explorer" 
+    IF(!(Test-Path -Path $keyPath)) { 
+        New-Item -Path $basePath -Name "Explorer"
+    }
+    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
+    Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
+}
+
+#Restart Explorer, open the start menu (necessary to load the new layout), and give it a few seconds to process
+Stop-Process -name explorer
+Start-Sleep -s 5
+$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
+Start-Sleep -s 5
+
+#Enable the ability to pin items again by disabling "LockedStartLayout"
+foreach ($regAlias in $regAliases){
+    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+    $keyPath = $basePath + "\Explorer" 
+    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
+}
+
+#Restart Explorer and delete the layout file
+Stop-Process -name explorer
+
+# Uncomment the next line to make clean start menu default for all new users
+#Import-StartLayout -LayoutPath $layoutFile -MountPath $env:SystemDrive\
+
+Remove-Item $layoutFile
+
+Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
+Import-Module -DisableNameChecking $PSScriptRoot\..\lib\force-mkdir.psm1
+
+Write-Output "Elevating privileges for this process"
+do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
+
+Write-Output "Uninstalling default apps"
+$apps = @(
+    # default Windows 10 apps
+    "Microsoft.3DBuilder"
+    "Microsoft.Appconnector"
+    "Microsoft.BingFinance"
+    "Microsoft.BingNews"
+    "Microsoft.BingSports"
+    "Microsoft.BingTranslator"
+    "Microsoft.BingWeather"
+    "Microsoft.FreshPaint"
+    "Microsoft.GamingServices"
+    "Microsoft.Microsoft3DViewer"
+    "Microsoft.MicrosoftOfficeHub"
+    "Microsoft.MicrosoftPowerBIForWindows"
+    "Microsoft.MicrosoftSolitaireCollection"
+    "Microsoft.MicrosoftStickyNotes"
+    "Microsoft.MinecraftUWP"
+    "Microsoft.NetworkSpeedTest"
+    "Microsoft.Office.OneNote"
+    "Microsoft.OneConnect"
+    "Microsoft.People"
+    "Microsoft.Print3D"
+    "Microsoft.SkypeApp"
+    "Microsoft.Wallet"
+    "Microsoft.Windows.Photos"
+    "Microsoft.WindowsAlarms"
+    #"Microsoft.WindowsCalculator"
+    "Microsoft.WindowsCamera"
+    "microsoft.windowscommunicationsapps"
+    "Microsoft.WindowsMaps"
+    "Microsoft.WindowsPhone"
+    "Microsoft.WindowsSoundRecorder"
+    #"Microsoft.WindowsStore"   # can't be re-installed
+    "Microsoft.ZuneMusic"
+    "Microsoft.ZuneVideo"
+
+    # Threshold 2 apps
+    "Microsoft.CommsPhone"
+    "Microsoft.ConnectivityStore"
+    "Microsoft.GetHelp"
+    "Microsoft.Getstarted"
+    "Microsoft.Messaging"
+    "Microsoft.Office.Sway"
+    "Microsoft.OneConnect"
+    "Microsoft.WindowsFeedbackHub"
+
+    # Creators Update apps
+    "Microsoft.Microsoft3DViewer"
+    #"Microsoft.MSPaint"
+
+    #Redstone apps
+    "Microsoft.BingFoodAndDrink"
+    "Microsoft.BingHealthAndFitness"
+    "Microsoft.BingTravel"
+    "Microsoft.WindowsReadingList"
+
+    # Redstone 5 apps
+    "Microsoft.MixedReality.Portal"
+    "Microsoft.ScreenSketch"
+
+    # non-Microsoft
+    "2FE3CB00.PicsArt-PhotoStudio"
+    "46928bounde.EclipseManager"
+    "4DF9E0F8.Netflix"
+    "613EBCEA.PolarrPhotoEditorAcademicEdition"
+    "6Wunderkinder.Wunderlist"
+    "7EE7776C.LinkedInforWindows"
+    "89006A2E.AutodeskSketchBook"
+    "9E2F88E3.Twitter"
+    "A278AB0D.DisneyMagicKingdoms"
+    "A278AB0D.MarchofEmpires"
+    "ActiproSoftwareLLC.562882FEEB491" # next one is for the Code Writer from Actipro Software LLC
+    "CAF9E577.Plex"  
+    "ClearChannelRadioDigital.iHeartRadio"
+    "D52A8D61.FarmVille2CountryEscape"
+    "D5EA27B7.Duolingo-LearnLanguagesforFree"
+    "DB6EA5DB.CyberLinkMediaSuiteEssentials"
+    "DolbyLaboratories.DolbyAccess"
+    "DolbyLaboratories.DolbyAccess"
+    "Drawboard.DrawboardPDF"
+    "Facebook.Facebook"
+    "Fitbit.FitbitCoach"
+    "Flipboard.Flipboard"
+    "GAMELOFTSA.Asphalt8Airborne"
+    "KeeperSecurityInc.Keeper"
+    "Microsoft.BingNews"
+    "NORDCURRENT.COOKINGFEVER"
+    "PandoraMediaInc.29680B314EFC2"
+    "Playtika.CaesarsSlotsFreeCasino"
+    "ShazamEntertainmentLtd.Shazam"
+    "SlingTVLLC.SlingTV"
+    "SpotifyAB.SpotifyMusic"
+    "TheNewYorkTimes.NYTCrossword"
+    "ThumbmunkeysLtd.PhototasticCollage"
+    "TuneIn.TuneInRadio"
+    "WinZipComputing.WinZipUniversal"
+    "XINGAG.XING"
+    "flaregamesGmbH.RoyalRevolt2"
+    "king.com.*"
+    "king.com.BubbleWitch3Saga"
+    "king.com.CandyCrushSaga"
+    "king.com.CandyCrushSodaSaga"
+
+    # apps which cannot be removed using Remove-AppxPackage
+    #"Microsoft.BioEnrollment"
+    #"Microsoft.MicrosoftEdge"
+    #"Microsoft.Windows.Cortana"
+    #"Microsoft.WindowsFeedback"
+    #"Microsoft.XboxGameCallableUI"
+    #"Microsoft.XboxIdentityProvider"
+    #"Windows.ContactSupport"
+
+    # apps which other apps depend on
+    "Microsoft.Advertising.Xaml"
+)
+
+foreach ($app in $apps) {
+    Write-Output "Trying to remove $app"
+
+    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+
+    Get-AppXProvisionedPackage -Online |
+        Where-Object DisplayName -EQ $app |
+        Remove-AppxProvisionedPackage -Online
+}
+
+# Prevents Apps from re-installing
+$cdm = @(
+    "ContentDeliveryAllowed"
+    "FeatureManagementEnabled"
+    "OemPreInstalledAppsEnabled"
+    "PreInstalledAppsEnabled"
+    "PreInstalledAppsEverEnabled"
+    "SilentInstalledAppsEnabled"
+    "SubscribedContent-314559Enabled"
+    "SubscribedContent-338387Enabled"
+    "SubscribedContent-338388Enabled"
+    "SubscribedContent-338389Enabled"
+    "SubscribedContent-338393Enabled"
+    "SubscribedContentEnabled"
+    "SystemPaneSuggestionsEnabled"
+)
+
+force-mkdir "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+foreach ($key in $cdm) {
+    Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" $key 0
+}
+
+force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore"
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" "AutoDownload" 2
+
+# Prevents "Suggested Applications" returning
+force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
+
+####
+# Unpin
+###
+
+# Unpin Widgets
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarDa -PropertyType DWord -Value 0 -Force
+# Unpin SearchBox
+    New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search -Name SearchboxTaskbarMode -PropertyType DWord -Value 0 -Force
+# Unpin Chat
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarMn -PropertyType DWord -Value 0 -Force
+# Unpin Store
+Start-Job -ScriptBlock {
+					$Apps = (New-Object -ComObject Shell.Application).NameSpace("shell:::{4234d49b-0245-4df3-b780-3893943456e1}").Items()
+					($Apps | Where-Object -FilterScript {$_.Name -eq "Microsoft Store"}).Verbs() | Where-Object -FilterScript {$_.Name -eq $Using:LocalizedString} | ForEach-Object -Process {$_.DoIt()}
+				} | Receive-Job -Wait -AutoRemoveJob
+# Edge
+$Signature = @{
+		Namespace        = "WinAPI"
+		Name             = "GetStr"
+		Language         = "CSharp"
+		MemberDefinition = @"
+[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+public static extern IntPtr GetModuleHandle(string lpModuleName);
+[DllImport("user32.dll", CharSet = CharSet.Auto)]
+internal static extern int LoadString(IntPtr hInstance, uint uID, StringBuilder lpBuffer, int nBufferMax);
+public static string GetString(uint strId)
+{
+	IntPtr intPtr = GetModuleHandle("shell32.dll");
+	StringBuilder sb = new StringBuilder(255);
+	LoadString(intPtr, strId, sb, sb.Capacity);
+	return sb.ToString();
+}
+"@
+	}
+	if (-not ("WinAPI.GetStr" -as [type]))
+	{
+		Add-Type @Signature -Using System.Text
+	}
+
+	# Extract the localized "Unpin from taskbar" string from shell32.dll
+	$LocalizedString = [WinAPI.GetStr]::GetString(5387)
+
+if (Test-Path -Path "$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk")
+				{
+					# Call the shortcut context menu item
+					$Shell = (New-Object -ComObject Shell.Application).NameSpace("$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")
+					$Shortcut = $Shell.ParseName("Microsoft Edge.lnk")
+					$Shortcut.Verbs() | Where-Object -FilterScript {$_.Name -eq $LocalizedString} | ForEach-Object -Process {$_.DoIt()}
+				}
+# File Transfer "Detailed"
+		
+	if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager))
+	{
+		New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager -Force
+	}
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager -Name EnthusiastMode -PropertyType DWord -Value 1 -Force
+	
+# CheckBox
+    New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name AutoCheckSelect -PropertyType DWord -Value 1 -Force
+
+# Show File Extension
+    New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name HideFileExt -PropertyType DWord -Value 0 -Force
+
+# Open in This PC
+    New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name LaunchTo -PropertyType DWord -Value 1 -Force
+
+# Panel Control by Category
+    if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel))
+			{
+				New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Force
+			}
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name AllItemsIconView -PropertyType DWord -Value 0 -Force
+			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name StartupPage -PropertyType DWord -Value 0 -Force
+		}
+
+# Set the quality factor of the JPEG desktop wallpapers to maximum
+    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name JPEGImportQuality -PropertyType DWord -Value 100 -Force
+
+# 	TaskManagerWindow -Expanded
+$Taskmgr = Get-Process -Name Taskmgr -ErrorAction Ignore
+
+	Start-Sleep -Seconds 1
+
+	if ($Taskmgr)
+	{
+		$Taskmgr.CloseMainWindow()
+	}
+	Start-Process -FilePath Taskmgr.exe -PassThru
+
+	Start-Sleep -Seconds 2
+
+	do
+	{
+		Start-Sleep -Milliseconds 100
+		$Preferences = Get-ItemPropertyValue -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences
+	}
+	until ($Preferences)
+
+	Stop-Process -Name Taskmgr -ErrorAction Ignore
+    $Preferences[28] = 0
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\TaskManager -Name Preferences -PropertyType Binary -Value $Preferences -Force
+
+# Hide update notif
+    New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings -Name RestartNotificationsAllowed2 -PropertyType DWord -Value 0 -Force
+
+# Shhake to minimize
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name DisallowShaking -PropertyType DWord -Value 0 -Force
+
+# Navigat mapped Drive as admin
+	New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name EnableLinkedConnections -PropertyType DWord -Value 1 -Force
+
+# Input methode Spanish
+# voir codes ici "https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs?view=windows-11"
+    Set-WinDefaultInputMethodOverride -InputTip "042d:0000040a" 
+
+# Sticky Keys
+	New-ItemProperty -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name Flags -PropertyType String -Value 506 -Force
+
+# Turn off automatically saving my restartable apps and restart them when I sign back in
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name RestartApps -PropertyType DWord -Value 0 -Force
+
+# Win Terminal as default
+if (Get-AppxPackage -Name Microsoft.WindowsTerminal)
+			{
+				# Show the option in the Desktop context menu
+				if (-not (Test-Path -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas\command))
+				{
+					New-Item -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas\command -ItemType Directory -Force
+				}
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas -Name "(default)" -PropertyType String -Value $Localization.OpenInWindowsTerminalAdmin -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas -Name Icon -PropertyType String -Value "imageres.dll,73" -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas -Name NoWorkingDirectory -PropertyType String -Value "" -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\Background\shell\runas\command -Name "(default)" -PropertyType String -Value "wt.exe -d ""%V""" -Force
+
+				# Show the option in the folders context menu
+				if (-not (Test-Path -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas\command))
+				{
+					New-Item -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas\command -ItemType Directory -Force
+				}
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas -Name "(default)" -PropertyType String -Value $Localization.OpenInWindowsTerminalAdmin -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas -Name Icon -PropertyType String -Value "imageres.dll,73" -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas -Name NoWorkingDirectory -PropertyType String -Value "" -Force
+				New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Directory\shell\runas\command -Name "(default)" -PropertyType String -Value "wt.exe -d ""%1""" -Force
+			}
+
+# Win10 Context Menu
+    if (-not (Test-Path -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"))
+    			{
+    				New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -ItemType Directory -Force
+    			}
+    			New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
+	
+
+
+# No search on store
+    if (-not (Test-Path -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer))
+    			{
+    				New-Item -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Force
+    			}
+    			New-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Name NoUseStoreOpenWith -PropertyType DWord -Value 1 -Force
+
+# Fix .msi pour extraction
+	if (-not (Test-Path -Path Registry::HKEY_CLASSES_ROOT\Msi.Package\shell\Extract\Command))
+	{
+		New-Item -Path Registry::HKEY_CLASSES_ROOT\Msi.Package\shell\Extract\Command -Force
+	}
+	$Value = "{0}" -f "msiexec.exe /a `"%1`" /qb TARGETDIR=`"%1 extracted`""
+	New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Msi.Package\shell\Extract\Command -Name "(default)" -PropertyType String -Value $Value -Force
+	New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Msi.Package\shell\Extract -Name MUIVerb -PropertyType String -Value "@shell32.dll,-37514" -Force
+	New-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Msi.Package\shell\Extract -Name Icon -PropertyType String -Value "shell32.dll,-16817" -Force
+
+# Smartscreen Edge
+    if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments))
+    			{
+    				New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments -Force
+    			}
+    			New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments -Name SaveZoneInformation -PropertyType DWord -Value 1 -Force
+    			New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer -Name SmartScreenEnabled -PropertyType String -Value Off -Force
+    if ((Get-MpComputerStatus).AntivirusEnabled)
+    			{
+    				Set-MpPreference -PUAProtection Disabled
+    			}
+
 ########################################################################################################
 
 
 # On retablit la politique d'execution de Script dans Powershell
+
 Set-ExecutionPolicy Default -Force
+
+if (Get-AppxPackage -Name MicrosoftTeams)
+			{
+				if (-not (Test-Path -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask"))
+				{
+					New-Item -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Force
+				}
+				New-ItemProperty -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask" -Name State -PropertyType DWord -Value 1 -Force
+			}
+
+(get-item "$pwd\.bash_history").Attributes += 'Hidden'
+
+Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging -Name EnableScriptBlockLogging -Force -ErrorAction Ignore
+Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging -Name EnableModuleLogging -Force -ErrorAction Ignore
+Remove-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames -Name * -Force -ErrorAction Ignore
+New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Security Health\State" -Name AccountProtection_MicrosoftAccount_Disconnected -PropertyType DWord -Value 1 -Force
+New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Security Health\State" -Name AppAndBrowser_EdgeSmartScreenOff -PropertyType DWord -Value 0 -Force
+
+Remove-Item "$pwd\get-pip.py"
+Remove-Item "$pwd\git.sh"
+Remove-Item "$pwd\-AllHostsâ€‹â€‹â€‹â€‹â€‹â€‹â€‹"
+Remove-Item "C:\nono-temp\" -Recurse
 
 # On propose de redemarre la machine
     Write-Host "reboot the Computer"
