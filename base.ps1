@@ -95,9 +95,12 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     Install-Module posh-git -Scope CurrentUser -Force -ErrorAction Ignore
     Write-Host "Le script (2) est installe" -ForegroundColor Green
 
+# On actualise les variables powershell
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+
 # On autorise le module (2)
     Write-Host "On autorise le module (2)"
-    Add-PoshGitToProfile -AllHosts​​​​​​​ -ErrorAction Ignore
+    Add-PoshGitToProfile -AllHosts​​​​​​​ 
     Write-Host "Le module (2) est autorise" -ForegroundColor Green
 
 # On actualise les variables powershell
@@ -260,6 +263,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     winget install --id=GitHub.GitHubDesktop  -e --accept-package-agreements --accept-source-agreements
 # League Of Legends
     winget install --id=RiotGames.LeagueOfLegends.EUW  -e --accept-package-agreements --accept-source-agreements
+    Get-Process -Name 'RiotClientServices','RiotClientUx' | Stop-Process -Force
 # Microsoft Edge
     winget install --id=Microsoft.Edge  -e --accept-package-agreements --accept-source-agreements
 # Mozilla Thunderbird
@@ -288,6 +292,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     winget install --id=Meld.Meld  -e --accept-package-agreements --accept-source-agreements
 # Microsoft Powertoys
     winget install --id=Microsoft.PowerToys  -e --accept-package-agreements --accept-source-agreements
+     Get-Process -Name 'PowerToys','PowerToys.Awake' | Stop-Process -Force
 # ImageGlass
     winget install --id=DuongDieuPhap.ImageGlass  -e --accept-package-agreements --accept-source-agreements
 # FlameShot
@@ -303,11 +308,13 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     winget install --id=Notepad++.Notepad++  -e --accept-package-agreements --accept-source-agreements
 # Parsec
     winget install --id=Parsec.Parsec  -e --accept-package-agreements --accept-source-agreements
+    Get-Process -Name 'parsecd','pservice' | Stop-Process -Force
 # Google Drive
     winget install --id=Google.Drive  -e --accept-package-agreements --accept-source-agreements
+    Stop-Process -Name 'GoogleDriveFS' -Force
 # VSCodium
     winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreements
-
+    Stop-Process -Name 'VSCodium' -Force
 # Activer les Mises à Jour automatiques du Windows Store
     reg add HKLM\SOFTWARE\Policies\Microsoft\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f
 
@@ -336,8 +343,10 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     choco install mpvnet.install
 # Battle.net
     choco install battle.net
+    Stop-Process -Name 'Battle.net Beta Setup' -Force
 # Razer Synapse
     choco install razer-synapse-3
+    Stop-Process -Name 'RazerInstaller' -Force
 # On check les mises à jour des paquets et si il y en a, on l'a fait 
     choco upgrade all
 # On desactive la confirmation automatique d'installation de paquets     
@@ -749,7 +758,7 @@ if(!(Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\TakeOwnership")){
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" -Name "EnthusiastMode" -Type DWord -Value 1
 
-Write-Host "Hiding People icon..."
+    Write-Host "Hiding People icon..."
     If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People")) {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" | Out-Null
     }
@@ -776,6 +785,7 @@ Write-Host "Hiding People icon..."
 	#SVCHost Tweak
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "SvcHostSplitThresholdInKB" -Type DWord -Value 4194304
     Write-Host "Disable News and Interests"
+    
     if (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds")){
     New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Force | Out-Null
     }
@@ -783,6 +793,7 @@ Write-Host "Hiding People icon..."
     #Remove news and interest from taskbar
     #Set-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
     #Remove meet now button from taskbar
+    
     If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
         New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
     }
@@ -794,6 +805,7 @@ Write-Host "Hiding People icon..."
         Remove-Item "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl"
     }
     icacls $autoLoggerDir /deny SYSTEM:`(OI`)`(CI`)F | Out-Null
+    
     #Disable Advertising ID
     If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo")) {
 	New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" | Out-Null
@@ -1007,7 +1019,7 @@ Write-Host "Hiding People icon..."
 # Panel Control by Category
     if (-not (Test-Path -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel))
 	{
-		New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Force
+	    New-Item -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Force
 	}
 	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name AllItemsIconView -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel -Name StartupPage -PropertyType DWord -Value 0 -Force
