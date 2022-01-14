@@ -106,7 +106,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
 # On actualise les variables powershell
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 
-    "https://github.com/ardelsaut/Win11-Script.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
+    "git clone https://github.com/ardelsaut/Win11-Script.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
     #"git clone https://gitlab.com/ardelsaut/base.git ~/Github/Win11" | Out-File -FilePath c:\Users\$($env:USERNAME)\git.sh
     # On convertit les fichier CRLF (Windows) vers LF (Linux)
     $original_file ="c:\Users\$($env:USERNAME)\git.sh"
@@ -114,7 +114,7 @@ Set-ItemProperty -Path 'Registry::HKU\.DEFAULT\Control Panel\Keyboard' -Name "In
     [IO.File]::WriteAllText($original_file, $text)
 
     start "$pwd\git.sh"
-    Start-Sleep -Seconds 2
+    Start-Sleep -Seconds 3
     Wait-Process -Name mintty
 
 
