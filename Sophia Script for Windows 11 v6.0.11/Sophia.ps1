@@ -333,14 +333,13 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     	}
     	New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
 
-git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
 
 
 # Set Wallpaper
 #~~~~~~~~~~~~~~~
 
 # On copie le dossier Image
-	Copy-Item "$pwd\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" "$pwd\Images"
+Copy-Item $env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\* $env:USERPROFILE\Images\ -Recurse
 
 Function Set-WallPaper {
 param (
@@ -399,7 +398,7 @@ public class Params
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
 # On met en place le papier peint
-	Set-WallPaper -Image "$pwd\Github\ardelsaut-Win11-Script-b438f35\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
+	Set-WallPaper -Image "$env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
 
 
 # Fin
