@@ -340,7 +340,7 @@ git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
 #~~~~~~~~~~~~~~~
 
 # On copie le dossier Image
-	Copy-Item "$pwd\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" "$pwd\Images"
+Copy-Item $env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\* $env:USERPROFILE\Images\ -Recurse
 
 Function Set-WallPaper {
 param (
@@ -399,7 +399,7 @@ public class Params
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
 # On met en place le papier peint
-	Set-WallPaper -Image "$pwd\Github\ardelsaut-Win11-Script-b438f35\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
+	Set-WallPaper -Image "$env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
 
 
 # Fin

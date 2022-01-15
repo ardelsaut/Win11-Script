@@ -186,9 +186,37 @@ function Checkings
 	# Unblock all files in the script folder by removing the Zone.Identifier alternate data stream with a value of "3"
 	Get-ChildItem -Path $PSScriptRoot\..\ -File -Recurse -Force | Unblock-File
 
-	# Do not Display a warning message about whether a user has customized the preset file
+	# Display a warning message about whether a user has customized the preset file
+	if ($Warning)
+	{
+		# Get the name of a preset (e.g Sophia.ps1) regardless it was named
+		$PresetName = Split-Path -Path ((Get-PSCallStack).Position | Where-Object -FilterScript {$_.File -match ".ps1"}).File -Leaf
 
-	continue
+		$Title = ""
+		$Message       = $Localization.CustomizationWarning -f $PresetName
+		$Yes           = $Localization.Yes
+		$No            = $Localization.No
+		$Options       = "&$No", "&$Yes"
+		$DefaultChoice = 0
+		$Result        = $Host.UI.PromptForChoice($Title, $Message, 1, $DefaultChoice)
+
+		switch ($Result)
+		{
+			"0"
+			{
+				Invoke-Item -Path $PSScriptRoot\..\$PresetName
+
+				Start-Sleep -Seconds 5
+
+				Start-Process -FilePath "https://github.com/farag2/Sophia-Script-for-Windows#how-to-use"
+				exit
+			}
+			"1"
+			{
+				continue
+			}
+		}
+	}
 
 	# Turn off Controlled folder access to let the script proceed
 	switch ((Get-MpPreference).EnableControlledFolderAccess)
