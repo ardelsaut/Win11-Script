@@ -1,4 +1,7 @@
-﻿#Requires -RunAsAdministrator
+# Write-ZipUsing7Zip -FilesToZip "C:\Users\nono" -ZipOutputFilePath "C:\nono.zip" -Password "luca1030"
+# Move-Item -Path C:\nono.zip W:\dtweb\config\nono.zip -Force -Verbose
+
+#Requires -RunAsAdministrator
 #Requires -Version 5.1
 # Invoke-RestMethod -Uri "https://api.github.com/repos/ardelsaut/win11-script/zipball/main" -OutFile "$pwd\nono.zip"; Expand-Archive -Path "$pwd\nono.zip" -DestinationPath "$pwd\Github" -Force; Set-ExecutionPolicy Unrestricted; cd $pwd\Github\ardelsaut-Win11-Script-b438f35\'Sophia Script for Windows 11 v6.0.11'\; .\Sophia.ps1
 
@@ -291,6 +294,7 @@ New-Item -Path "c:\Users\$($env:USERNAME)" -Name "Applications" -ItemType "direc
     Get-Process -Name 'parsecd','pservice' | Stop-Process -Force
 # Google Drive
     winget install --id=Google.Drive  -e --accept-package-agreements --accept-source-agreements
+    Start-Sleep -s 2
     Stop-Process -Name 'GoogleDriveFS' -Force
 # VSCodium
     winget install --id=VSCodium.VSCodium  -e --accept-package-agreements --accept-source-agreements
@@ -336,12 +340,71 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
 git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
 
 
+
+# On met en Place les dossiers Utilisateurs
+    
+    Write-Host "On cree le dossier de Travail du script"
+    New-Item -Path "c:\" -Name "nono-temp" -ItemType "directory" | Out-Null
+    Write-Host "Le Dossier de Travail du script est cree" -ForegroundColor Green
+
+    Write-Host "On telecharge le zip de configuration utilisateur, un peu de patience ..."
+    $ProgressPreference = 'SilentlyContinue'
+    wget 192.168.1.115/dtweb/config/nono.zip -OutFile C:\nono-temp\nono.zip
+    Write-Host "Zip Config telecharge!" -ForegroundColor Green
+    $ProgressPreference = 'Continue'
+
+    Install-Module -Name 7Zip4PowerShell -Force -ErrorAction Ignore
+#    $passzip=Read-Host -Prompt Password
+    $passzip = Read-Host 'Quel est le Mot de Passe?' -AsSecureString
+    $passzip = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($passzip))
+
+    Expand-7Zip -ArchiveFileName "C:\nono-temp\nono.zip" -Password $passzip -TargetPath "C:\nono-temp\" -Verbose
+
+#    takeown /f "$env:USERPROFILE\*" /R
+    Move-Item -Path C:\nono-temp\nono\'.bash_history' $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'.dbus-keyrings'\ $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'.gitconfig' $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'.ssh'\ $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'.vscode-oss'\ $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'_.swp' $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'_viminfo' $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'ansel'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\AppData
+    Move-Item -Path C:\nono-temp\nono\AppData\* $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\"Application Data"
+    Move-Item -Path C:\nono-temp\nono\"Application Data"\ $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'Applications'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\Cookies
+    Move-Item -Path C:\nono-temp\nono\'Cookies'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\Desktop
+    Move-Item -Path C:\nono-temp\nono\'Desktop'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\Documents
+    Move-Item -Path C:\nono-temp\nono\'Documents'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\Downloads
+    Move-Item -Path C:\nono-temp\nono\'Downloads'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\Favorites
+    Move-Item -Path C:\nono-temp\nono\'Favorites'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Local Settings'
+    Move-Item -Path C:\nono-temp\nono\'Local Settings'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Menu Démarrer'
+    Move-Item -Path C:\nono-temp\nono\'Menu Démarrer'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Mes Documents'
+    Move-Item -Path C:\nono-temp\nono\'Mes Documents'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Modèles'
+    Move-Item -Path C:\nono-temp\nono\'Modèles'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Music'
+    Move-Item -Path C:\nono-temp\nono\'Music'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Pictures'
+    Move-Item -Path C:\nono-temp\nono\'Pictures'\ $env:USERPROFILE -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\'vimfiles'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q C:\nono-temp\nono\AppData
+    cmd /c rd /s /q C:\nono-temp\nono
+#    robocopy /E /COPY:DATSU /MT:8 /R:0 /W:0 /DCOPY:DAT C:\Users\nono\* $env:USERPROFILE\nono-config
+
 # Set Wallpaper
 #~~~~~~~~~~~~~~~
 
 # On copie le dossier Image
-Copy-Item $env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\* $env:USERPROFILE\Images\ -Recurse
-
 Function Set-WallPaper {
 param (
     [parameter(Mandatory=$True)]
@@ -399,8 +462,7 @@ public class Params
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
 # On met en place le papier peint
-	Set-WallPaper -Image "$env:USERPROFILE\Github\Win11-Script\scripts-persos\Images\Wallpapers\windows-10.png" -Style Fill
-
+	Set-WallPaper -Image "$env:USERPROFILE\Images\Wallpapers\windows-10.png" -Style Fill
 
 # Fin
 #~~~~
