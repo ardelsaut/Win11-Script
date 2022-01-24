@@ -369,36 +369,38 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     Move-Item -Path C:\nono-temp\nono\'_.swp' $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'_viminfo' $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'ansel'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\AppData
-    Move-Item -Path C:\nono-temp\nono\AppData\* $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'AppData'
+    Move-Item -Path C:\nono-temp\nono\'AppData'\* $env:USERPROFILE\'AppData' -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\"Application Data"
     Move-Item -Path C:\nono-temp\nono\"Application Data"\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'Applications'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\Cookies
+    cmd /c rd /s /q $env:USERPROFILE\'Cookies'
     Move-Item -Path C:\nono-temp\nono\'Cookies'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\Desktop
+    cmd /c rd /s /q $env:USERPROFILE\'Desktop'
     Move-Item -Path C:\nono-temp\nono\'Desktop'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\Documents
+    cmd /c rd /s /q $env:USERPROFILE\'Documents'
     Move-Item -Path C:\nono-temp\nono\'Documents'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\Downloads
+    cmd /c rd /s /q $env:USERPROFILE\'Downloads'
     Move-Item -Path C:\nono-temp\nono\'Downloads'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\Favorites
     Move-Item -Path C:\nono-temp\nono\'Favorites'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Local Settings'
     Move-Item -Path C:\nono-temp\nono\'Local Settings'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\'Menu Démarrer'
-    Move-Item -Path C:\nono-temp\nono\'Menu Démarrer'\ $env:USERPROFILE -Force -Verbose
+    
     cmd /c rd /s /q $env:USERPROFILE\'Mes Documents'
     Move-Item -Path C:\nono-temp\nono\'Mes Documents'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\'Modèles'
-    Move-Item -Path C:\nono-temp\nono\'Modèles'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Music'
     Move-Item -Path C:\nono-temp\nono\'Music'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Pictures'
     Move-Item -Path C:\nono-temp\nono\'Pictures'\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'vimfiles'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q C:\nono-temp\nono\AppData
-    cmd /c rd /s /q C:\nono-temp\nono
+    cmd /c rd /s /q $env:USERPROFILE\'Menu Démarrer'
+    cmd /c rd /s /q $env:USERPROFILE\'Modèles'
+    Move-Item -Path C:\nono-temp\nono\* $env:USERPROFILE -Force -Verbose
+    Remove-Item C:\nono-temp\nono\AppData
+    Remove-Item /q C:\nono-temp\nono
+    Remove-Item C:\nono-temp\nono.zip
+    Remove-Item C:\nono-temp
 #    robocopy /E /COPY:DATSU /MT:8 /R:0 /W:0 /DCOPY:DAT C:\Users\nono\* $env:USERPROFILE\nono-config
 
 # Set Wallpaper
