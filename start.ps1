@@ -44,8 +44,7 @@ Set-ExecutionPolicy Unrestricted
 
 # On lance Git Clone
     start "$env:USERPROFILE\git.sh"
-    Remove-Item "$env:USERPROFILE\git.sh"
-    Remove-Item "$env:USERPROFILE\Git-2.34.1-64-bit.exe"
+    
 # On démarre le script
- cd "$env:USERPROFILE\GitHub\Win11-Script\Sophia-Script-Win11"
+ cd "C:\Users\nono\GitHub\Win11-Script\scripts-persos\Sophia-Scrpit\Win11\Sophia-Script-Win11\"
  .\Sophia.ps1
