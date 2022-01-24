@@ -44,8 +44,6 @@ Set-ExecutionPolicy Unrestricted
 
 # On lance Git Clone
     start "$env:USERPROFILE\git.sh"
-    Start-Sleep -Seconds 3
-    Wait-Process -Name mintty
     Remove-Item "$env:USERPROFILE\git.sh"
     Remove-Item "$env:USERPROFILE\Git-2.34.1-64-bit.exe"
 # On démarre le script
