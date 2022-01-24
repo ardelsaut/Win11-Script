@@ -337,7 +337,7 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     	}
     	New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(default)" -PropertyType String -Value "" -Force
 
-git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
+# git clone "https://github.com/ardelsaut/Win11-Script.git" "$pwd\Github"
 
 
 
