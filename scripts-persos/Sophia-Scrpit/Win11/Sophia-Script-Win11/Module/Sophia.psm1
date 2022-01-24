@@ -1,4 +1,4 @@
-﻿<#
+<#
 	.SYNOPSIS
 	Sophia Script is a PowerShell module for Windows 10 & Windows 11 fine-tuning and automating the routine tasks
 
@@ -198,7 +198,7 @@ function Checkings
 		$No            = $Localization.No
 		$Options       = "&$No", "&$Yes"
 		$DefaultChoice = 1
-		$Result        = $Host.UI.PromptForChoice($Title, $Message, 1, $DefaultChoice)
+		$Result        = $Host.UI.PromptForChoice($Title, $Message, $Options, $DefaultChoice)
 
 		switch ($Result)
 		{
