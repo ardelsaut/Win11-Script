@@ -197,7 +197,7 @@ function Checkings
 		$Yes           = $Localization.Yes
 		$No            = $Localization.No
 		$Options       = "&$No", "&$Yes"
-		$DefaultChoice = 0
+		$DefaultChoice = 1
 		$Result        = $Host.UI.PromptForChoice($Title, $Message, 1, $DefaultChoice)
 
 		switch ($Result)
