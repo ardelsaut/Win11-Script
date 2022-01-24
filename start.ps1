@@ -44,6 +44,8 @@ Set-ExecutionPolicy Unrestricted
 
 # On lance Git Clone
     start "$env:USERPROFILE\git.sh"
+    Start-Sleep -Seconds 3
+    Wait-Process -Name mintty
     
 # On démarre le script
  cd "C:\Users\nono\GitHub\Win11-Script\scripts-persos\Sophia-Scrpit\Win11\Sophia-Script-Win11\"
