@@ -404,8 +404,8 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
 # Set Wallpaper
 #~~~~~~~~~~~~~~~
 
-# On copie le dossier Image
 Function Set-WallPaper {
+ 
 param (
     [parameter(Mandatory=$True)]
     # Provide path to image
@@ -453,6 +453,7 @@ public class Params
                                                    Int32 fuWinIni);
 }
 "@ 
+  
     $SPI_SETDESKWALLPAPER = 0x0014
     $UpdateIniFile = 0x01
     $SendChangeEvent = 0x02
@@ -462,7 +463,7 @@ public class Params
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
 # On met en place le papier peint
-	Set-WallPaper -Image "$env:USERPROFILE\Images\Wallpapers\windows-10.png" -Style Fill
+	Set-WallPaper -Image "$env:USERPROFILE\Pictures\Wallpaper\windows-10.png" -Style Fill
 
 # Fin
 #~~~~
