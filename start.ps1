@@ -6,6 +6,8 @@ $passzip = Read-Host 'Quel est le Mot de Passe?' -AsSecureString
 $passzip = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($passzip))
 Write-ZipUsing7Zip -FilesToZip "C:\Users\nono" -ZipOutputFilePath "C:\nono.zip" -Password $passzip
 
+robocopy /E /COPY:DATSU /MT:8 /R:0 /W:0 /DCOPY:DAT C:\Users\nono\* $env:USERPROFILE\nono-config
+
 
 #>
 
