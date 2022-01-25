@@ -53,6 +53,7 @@ Set-ExecutionPolicy Unrestricted
 # On lance Git Clone
     start "$env:USERPROFILE\git.sh"
     Start-Sleep -Seconds 3
+    $ProgressPreference = 'SilentlyContinue'
     Wait-Process -Name mintty
     
 # On démarre le script
