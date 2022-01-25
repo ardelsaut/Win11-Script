@@ -403,10 +403,9 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     cmd /c rd /s /q $env:USERPROFILE\'Modèles'
     Move-Item -Path C:\nono-temp\nono\* $env:USERPROFILE -Force -Verbose
     Remove-Item C:\nono-temp\nono\AppData
-    Remove-Item /q C:\nono-temp\nono
+    Remove-Item C:\nono-temp\nono
     Remove-Item C:\nono-temp\nono.zip
     Remove-Item C:\nono-temp
-#    robocopy /E /COPY:DATSU /MT:8 /R:0 /W:0 /DCOPY:DAT C:\Users\nono\* $env:USERPROFILE\nono-config
 
 # Set Wallpaper
 #~~~~~~~~~~~~~~~
