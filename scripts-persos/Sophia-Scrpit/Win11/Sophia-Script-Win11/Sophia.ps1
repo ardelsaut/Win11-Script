@@ -393,7 +393,6 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     Move-Item -Path C:\nono-temp\nono\'Favorites'\ $env:USERPROFILE -Force -Verbose
     #cmd /c rd /s /q $env:USERPROFILE\'Local Settings'
     #Move-Item -Path C:\nono-temp\nono\'Local Settings'\ $env:USERPROFILE -Force -Verbose
-    
     cmd /c rd /s /q $env:USERPROFILE\'Mes Documents'
     Move-Item -Path C:\nono-temp\nono\'Mes Documents'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Music'
@@ -403,12 +402,10 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     Move-Item -Path C:\nono-temp\nono\'Pictures'\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'vimfiles'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Menu Démarrer'
+    cmd /c rd /s /q $env:USERPROFILE\'Start Menu'
+    cmd /c rd /s /q $env:USERPROFILE\'Models'
     cmd /c rd /s /q $env:USERPROFILE\'Modèles'
     Move-Item -Path C:\nono-temp\nono\* $env:USERPROFILE -Force -Verbose
-    Remove-Item C:\nono-temp\nono\AppData
-    Remove-Item C:\nono-temp\nono
-    Remove-Item C:\nono-temp\nono.zip
-    Remove-Item C:\nono-temp
 
 # Set Wallpaper
 #~~~~~~~~~~~~~~~
@@ -473,6 +470,14 @@ public class Params
 }
 # On met en place le papier peint
 	Set-WallPaper -Image "$env:USERPROFILE\Pictures\WALLPAPER\windows-10.png" -Style Fill
+
+    Remove-Item C:\nono-temp\nono\AppData\*
+    Remove-Item C:\nono-temp\nono\AppData
+    Remove-Item C:\nono-temp\nono
+    Remove-Item C:\nono-temp\nono.zip
+    Remove-Item C:\nono-temp
+
+
 
 # Fin
 #~~~~
