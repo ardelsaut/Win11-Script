@@ -365,14 +365,18 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     Move-Item -Path C:\nono-temp\nono\'.dbus-keyrings'\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'.gitconfig' $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'.ssh'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'.vscode-oss'
     Move-Item -Path C:\nono-temp\nono\'.vscode-oss'\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'_.swp' $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'_viminfo' $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'ansel'\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'AppData\Local'
+    cmd /c rd /s /q $env:USERPROFILE\'AppData\Roaming'
     cmd /c rd /s /q $env:USERPROFILE\'AppData'
     Move-Item -Path C:\nono-temp\nono\'AppData'\* $env:USERPROFILE\'AppData' -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\"Application Data"
     Move-Item -Path C:\nono-temp\nono\"Application Data"\ $env:USERPROFILE -Force -Verbose
+    cmd /c rd /s /q $env:USERPROFILE\'Applications'
     Move-Item -Path C:\nono-temp\nono\'Applications'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Cookies'
     Move-Item -Path C:\nono-temp\nono\'Cookies'\ $env:USERPROFILE -Force -Verbose
@@ -384,14 +388,15 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     Move-Item -Path C:\nono-temp\nono\'Downloads'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\Favorites
     Move-Item -Path C:\nono-temp\nono\'Favorites'\ $env:USERPROFILE -Force -Verbose
-    cmd /c rd /s /q $env:USERPROFILE\'Local Settings'
-    Move-Item -Path C:\nono-temp\nono\'Local Settings'\ $env:USERPROFILE -Force -Verbose
+    #cmd /c rd /s /q $env:USERPROFILE\'Local Settings'
+    #Move-Item -Path C:\nono-temp\nono\'Local Settings'\ $env:USERPROFILE -Force -Verbose
     
     cmd /c rd /s /q $env:USERPROFILE\'Mes Documents'
     Move-Item -Path C:\nono-temp\nono\'Mes Documents'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Music'
     Move-Item -Path C:\nono-temp\nono\'Music'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Pictures'
+    cmd /c rd /s /q $env:USERPROFILE\'Images'
     Move-Item -Path C:\nono-temp\nono\'Pictures'\ $env:USERPROFILE -Force -Verbose
     Move-Item -Path C:\nono-temp\nono\'vimfiles'\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Menu Démarrer'
