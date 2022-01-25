@@ -373,7 +373,10 @@ Set-ItemProperty -Path 'registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows 
     cmd /c rd /s /q $env:USERPROFILE\'AppData\Local'
     cmd /c rd /s /q $env:USERPROFILE\'AppData\Roaming'
     cmd /c rd /s /q $env:USERPROFILE\'AppData'
-    Move-Item -Path C:\nono-temp\nono\'AppData'\* $env:USERPROFILE\'AppData' -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\AppData\'Roaming'\* $env:USERPROFILE\AppData\'Roaming' -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\AppData\'Local'\* $env:USERPROFILE\AppData\'Local' -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\AppData\'LocalLow' $env:USERPROFILE\AppData\'LocalLow' -Force -Verbose
+    Move-Item -Path C:\nono-temp\nono\AppData\ $env:USERPROFILE\'AppData\' -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\"Application Data"
     Move-Item -Path C:\nono-temp\nono\"Application Data"\ $env:USERPROFILE -Force -Verbose
     cmd /c rd /s /q $env:USERPROFILE\'Applications'
@@ -469,7 +472,7 @@ public class Params
     $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
 }
 # On met en place le papier peint
-	Set-WallPaper -Image "$env:USERPROFILE\Pictures\Wallpaper\windows-10.png" -Style Fill
+	Set-WallPaper -Image "$env:USERPROFILE\Pictures\WALLPAPER\windows-10.png" -Style Fill
 
 # Fin
 #~~~~
