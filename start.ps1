@@ -27,7 +27,7 @@ Set-ExecutionPolicy Unrestricted
 
 # On installe le module dont depend le script (1)
     Write-Host "On installe le module dont depend le script (1)"
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -SkipPublisherCheck -ErrorAction Ignore
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -ErrorAction Ignore
     Install-Module PowerShellGet -Force -SkipPublisherCheck -ErrorAction Ignore
     Write-Host "Le script (1) est installe" -ForegroundColor Green
 
