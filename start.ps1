@@ -2,6 +2,11 @@
 
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ardelsaut/Win11-Script/main/start.ps1'))
 
+$passzip = Read-Host 'Quel est le Mot de Passe?' -AsSecureString
+$passzip = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($passzip))
+Write-ZipUsing7Zip -FilesToZip "C:\Users\nono" -ZipOutputFilePath "C:\nono.zip" -Password $passzip
+
+
 #>
 
 # On permet le lancement de Script
