@@ -1,5 +1,5 @@
 <#
-
+https://raw.githubusercontent.com/ardelsaut/Win11-scripts/main/start.ps1?token=GHSAT0AAAAAABSML75T3QPPHBGFVBP7EXHCYRZ5DYQ
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ardelsaut/Win11-Script/main/start.ps1'))
 
 $passzip = Read-Host 'Quel est le Mot de Passe?' -AsSecureString
